@@ -32,11 +32,6 @@ mathjax: false
 
 # 打造可移植 linux-go 开发环境
 
-## 成品
-
-[upl-image-preview url=https://bbs.d0g3.cn/assets/files/2022-08-17/1660704139-726708-image.png]
-
-
 ## 前言
 
 大家伙都不发帖，我来水一水
