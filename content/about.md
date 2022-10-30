@@ -12,4 +12,4 @@ mathjax: false
 
 Y1nhui's Blog
 
-Go developer
+曾经的安全web手，现在的go开发工程师
