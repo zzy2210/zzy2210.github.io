@@ -1,5 +1,5 @@
 ---
-title: "Stack"
+title: "数据结构-栈"
 date: 2022-10-30T12:33:35+08:00
 lastmod: 2022-10-30T12:33:35+08:00
 draft: false
