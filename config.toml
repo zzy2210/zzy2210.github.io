@@ -2,7 +2,7 @@
 # If you want to see the full configuration, please check `full-config.toml` .
 # And see https://gohugo.io/getting-started/configuration/ .
 
-baseURL = "https://https://zzy2210.github.io/"
+baseURL = "https://zzy2210.github.io/"
 title = "黑白の世界"
 enableRobotsTXT = true
 enableEmoji = true
