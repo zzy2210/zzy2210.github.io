@@ -50,7 +50,7 @@ defaultContentLanguage = "en"           # Default language to use
   identifier = "categories"
   pageref = "/categories/"
 [[menu.main]]
-  name = "external-link"
+  name = "Friends"
   weight = 50
   pageref = "https://gohugo.io"
 
@@ -79,6 +79,10 @@ defaultContentLanguage = "en"           # Default language to use
   customCSS = []            # if ['custom.css'], load '/static/css/custom.css' file
   customJS = []             # if ['custom.js'], load '/static/js/custom.js' file
 
+customFooter = "皖ICP备19008609号-1"
+
   [params.social]                                         # 社交链接
     a-email = "y1nhui@foxmail.com"
     g-github = "https://github.com/zzy2210"
+
+
