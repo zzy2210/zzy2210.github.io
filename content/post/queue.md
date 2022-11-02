@@ -40,7 +40,7 @@ mathjax: false
  ```go
 type Queue interface {
 	Empty() bool
-	Size() (int, bool)
+	Size() int
 	// 返回队首值
 	Front() (interface{}, bool)
 	// 返回队尾值
@@ -104,3 +104,9 @@ front、back、size的关系应该是什么。
 不过有个问题，就是大家想一下就会发现，如果我们给队列完全填满了，他也会是`front = back`
 
 这是不行的，所以我们需要在加一条限制，队列的最大容量是 arryLen - 1 每次push前做一次检测，如果发现当前容量已经是最大容量了，需要进行一次扩容(arryLen = arryLen*2) 才可以进行push
+
+明确了这些后，就可以开始编码了。
+
+```go
+
+```

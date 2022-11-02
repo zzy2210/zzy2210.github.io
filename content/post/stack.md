@@ -1,7 +1,7 @@
 ---
 title: "数据结构-栈"
 date: 2022-10-30T12:33:35+08:00
-lastmod: 2022-10-30T12:33:35+08:00
+lastmod: 2022-11-02T22:35:35+08:00
 draft: false
 keywords: ["go","data structure"]
 description: "完成对栈的定义，实现与应用"
@@ -102,12 +102,10 @@ func (s *ArrayStack) Pop() (val interface{}, ok bool) {
 }
 
 func (s *ArrayStack) Push(val interface{}) (ok bool) {
-	if s.Empty() {
-		s.Array = []interface{}{}
-	}
-	s.Array[s.Size()] = val
+	s.Array = append(s.Array, val)
 	return true
 }
+
 
 ```
 
