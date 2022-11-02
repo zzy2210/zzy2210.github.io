@@ -88,7 +88,7 @@ func (s *ArrayStack) Top() (val interface{}, ok bool) {
 	if s.Empty() {
 		return nil, false
 	}
-	val = s.Array[s.Size()]
+	val = s.Array[s.Size()-1]
 	return val, true
 }
 
@@ -96,7 +96,7 @@ func (s *ArrayStack) Pop() (val interface{}, ok bool) {
 	if s.Empty() {
 		return nil, false
 	}
-	val = s.Array[s.Size()]
+	val = s.Array[s.Size()-1]
 	s.Array = s.Array[:s.Size()-1]
 	return val, true
 }
