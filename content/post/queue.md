@@ -108,5 +108,172 @@ front、back、size的关系应该是什么。
 明确了这些后，就可以开始编码了。
 
 ```go
+type ArrayQueue struct {
+	QueueFront int
+	QueueBack  int
+	Array      []interface{}
+	QueueSize  int
+}
+
+func New() *ArrayQueue {
+	array := make([]interface{}, 4)
+	return &ArrayQueue{
+		QueueFront: 0,
+		QueueBack:  0,
+		Array:      array,
+		QueueSize:  0,
+	}
+}
+
+func (q *ArrayQueue) Empty() bool {
+	// return q.queueFront == q.queueBack
+	return q.QueueSize == 0
+}
+
+func (q *ArrayQueue) Size() int {
+	return q.QueueSize
+}
+
+func (q *ArrayQueue) Front() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	return q.Array[q.QueueFront+1], true
+}
+
+func (q *ArrayQueue) Back() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	return q.Array[q.QueueBack], true
+}
+
+func (q *ArrayQueue) Pop() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	front := (q.QueueFront + 1) % len(q.Array)
+	val := q.Array[front]
+	q.Array[front] = nil
+	q.QueueFront = front
+	q.QueueSize--
+	return val, true
+}
+
+func (q *ArrayQueue) Push(val interface{}) bool {
+	if q.Size() == len(q.Array)-1 {
+		q.Array = append(q.Array, make([]interface{}, len(q.Array))...)
+	}
+	back := (q.QueueBack + 1) % len(q.Array)
+	q.Array[back] = val
+	q.QueueBack = back
+	q.QueueSize++
+	return true
+}
 
 ```
+
+### 链表实现
+
+基于单链表实现同样要区分一下哪里是队列头，哪里是队列尾
+
+首先我们需要两个指针，front与back 分别指向头与尾
+
+如果是插入操作的话，无论哪一端是队尾都是很简单的
+
+如果头节点是队尾：
+
+```go
+queue= &node{
+	Val:val,
+	Next:head,
+}
+```
+
+如果链表结尾是队尾：
+
+``` go
+back.Next :=  &node{
+Val:val,
+Next:nil,
+}
+back = back.Next
+```
+
+可见他们都是O(1)操作，但是删除操作就不一样了。
+
+
+假设是头节点为队尾，那么删除操作需要先遍历到队尾前一个节点，随后断开链。
+
+而链尾是队尾的情况只需要让 `front = front.Next` 就可以轻松断开
+
+所以我们定义这个链表实现的队列，头节点处为队首，尾节点处为队尾
+
+```go
+type LinkedQueue struct {
+	// 指向链首
+	QueueFront *chainNode
+	QueueBack  *chainNode
+	QueueSize  int
+}
+
+type chainNode struct {
+	Val  interface{}
+	Next *chainNode
+}
+
+func (q *LinkedQueue) Empty() bool {
+	/*
+		if q.QueueBack == q.QueueBack && q.QueueFront == nil {
+			return true
+		}
+		return false
+	*/
+	return q.QueueSize == 0
+}
+
+func (q *LinkedQueue) Size() int {
+	return q.QueueSize
+}
+
+func (q *LinkedQueue) Front() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	return q.QueueFront.Val, true
+}
+
+func (q *LinkedQueue) Back() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	return q.QueueBack.Val, true
+}
+
+func (q *LinkedQueue) Pop() (interface{}, bool) {
+	if q.Empty() {
+		return nil, false
+	}
+	val := q.QueueFront.Val
+	q.QueueFront = q.QueueFront.Next
+	q.QueueSize--
+	return val, true
+}
+
+func (q *LinkedQueue) Push(val interface{}) bool {
+	node := &chainNode{
+		Val: val,
+	}
+	if q.Empty() {
+		q.QueueFront = node
+	} else {
+		q.QueueBack.Next = node
+	}
+	q.QueueBack = node
+	q.QueueSize++
+	return true
+}
+
+```
+
+## 应用
