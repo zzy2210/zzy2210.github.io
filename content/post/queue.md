@@ -277,3 +277,9 @@ func (q *LinkedQueue) Push(val interface{}) bool {
 ```
 
 ## 应用
+
+应用方面仍然使用leetcode题目作为演示
+
+### 字符串中的第一个唯一字符
+
+[leetcode](https://leetcode.cn/problems/first-unique-character-in-a-string/)
