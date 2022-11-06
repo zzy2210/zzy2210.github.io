@@ -2,7 +2,7 @@
 title: "数据结构-队列"
 date: 2022-10-31T21:58:57+08:00
 lastmod: 2022-10-31T21:58:57+08:00
-draft: true
+draft: false
 keywords: ["go","data structure"]
 description: "完成对队列的定义，实现与应用"
 tags: ["data structure"]
@@ -283,3 +283,65 @@ func (q *LinkedQueue) Push(val interface{}) bool {
 ### 字符串中的第一个唯一字符
 
 [leetcode](https://leetcode.cn/problems/first-unique-character-in-a-string/)
+
+送一个长度为n的字符串（只有小写字母），要求返回第一个无重复字符串的索引。
+
+这里解法是先写一个长度为26的数组。从a[0]到a[25]分别代表a-z
+将它们的值置为n,代表还未检索到。
+
+创建一个队列，之后开始检索字符串。每检索到一个字符串便将对应的a[x]的值置为该字符串的索引，并且将索引与字节的结构体送入队列。
+如果发现已经有索引了，就开始清空队列，一直清到队首的结构体没有被检索。
+
+一直到将字符串检索完，如果这是队列非空，则队首的值是唯一的，如果为空则说明无唯一字符，返回-1
+
+代码实现：
+
+``` go 
+type pair struct {
+	ch  byte
+	pos int
+}
+
+func firstUniqChar(s string) int {
+	n := len(s)
+	alpbabet := make([]int, 26)
+	for i, _ := range alpbabet {
+		alpbabet[i] = n
+	}
+	q := []*pair{}
+	for i := range s {
+		b := s[i]
+		index := b - 'a'
+		if alpbabet[index] == n {
+			q = append(q, &pair{
+				ch:  b,
+				pos: i,
+			})
+			alpbabet[index] = i
+		} else {
+			alpbabet[index] = n + 1
+			for len(q) != 0 {
+				index := q[0].ch - 'a'
+				if alpbabet[index] == n+1 {
+					q = q[1:]
+				} else {
+					break
+				}
+			}
+		}
+	}
+	if len(q) > 0 {
+		return q[0].pos
+	}
+	return -1 
+}
+
+```
+
+## 总结
+
+本文完成了对队列的定义与代码实现，并且就队列完成了一道leetcode题目
+
+其实最开始想引用参考书籍里的例子，但多为应用题或之前章节题目的部分的改进，叙述过多，所以并未使用。
+
+这次学习与博文撰写期间，周末公司外出团建，耽搁时间略多，虽然回来后还是有些晕车想吐，所幸还是写出了这篇文章，没有在计划开启的第二个星期就失败
