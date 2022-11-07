@@ -3,10 +3,10 @@ title: "kubernetes-环境搭建"
 date: 2022-11-07T17:45:08+08:00
 lastmod: 2022-11-07T17:45:08+08:00 
 draft: true
-keywords: ["kubernetes"，"云原生"]
+keywords: ["kubernetes","云原生"]
 description: "完成k8s的集群环境搭建"
 tags: ["kubernetes"]
-keywords: ["kubernetes"，"云原生"]
+keywords: ["kubernetes","云原生"]
 author: "y1nhui"
 
 # Uncomment to pin article to front page
@@ -14,7 +14,7 @@ author: "y1nhui"
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 comment: false
-toc: false
+toc: true
 autoCollapseToc: false
 # You can also define another contentCopyright. e.g. contentCopyright: "This is another copyright."
 contentCopyright: false
