@@ -2,7 +2,7 @@
 title: "数据结构-字典"
 date: 2022-11-07T22:55:36+08:00
 lastmod: 2022-11-07T22:55:36+08:00
-draft: true
+draft: false
 keywords: ["go","data structure"]
 description: "完成对跳表的说明，对散列的定义，实现与应用"
 tags: ["data structure"]
@@ -126,6 +126,34 @@ f(k)的范围也是`1`~`9000`
 
 	这种情况下的删除比较麻烦。不能只把桶中对应的键值对删除就了事。还需要从删除位置的下一个桶开始，逐个检查每一个桶，来判断每一个桶中的元素是否实在起始桶，是否需要向移动一次，直到抵达一个未溢出的桶或者回到删除位置为止。
 
+#### 链式散列
+
+如果桶可以容量无数个键值对，那就不需要纠结溢出的问题了。
+
+所以我们将每个桶都配置一个线性表，自然就可以了。
+
+#### 负载因子
+
+容纳的键值对数量处于桶的数量便是负载因子。
+
+一般情况下负载因子越高，hash表的性能就越低，因而当负载因子达到一定程度的时候便应该启用hash扩容。
+
+在Go原生的map中，当负载因子达到6.5时，便会启动扩容
+
+可见`runtime/map.go`:
+
+``` go
+const (
+	// Maximum number of key/elem pairs a bucket can hold.
+	bucketCntBits = 3
+	bucketCnt     = 1 << bucketCntBits
+
+	// Maximum average load of a bucket that triggers growth is 6.5.
+	// Represent as loadFactorNum/loadFactorDen, to allow integer math.
+	loadFactorNum = 13
+	loadFactorDen = 2
+）
+```
 
 ### 字典
 
@@ -156,3 +184,188 @@ type Dict interface {
 
 本来这里打算写一下线性表的dic实现，但是仔细想了想，线性表无非是之前的interface改成一个结构体里面两个interface，没有什么变动，就决定跳过线性表实现，直接开始写链式实现的hash
 
+不过这里的hash map 是很不可靠的，比如没有扩容机制等，只能作为一个加强对链表hash理解的学习代码
+
+```go
+package hash
+
+type HashDict struct {
+	Buckets []*chainNode
+	size    int
+}
+
+type chainNode struct {
+	Key  interface{}
+	Val  interface{}
+	Next *chainNode
+}
+
+func NewHashDict() *HashDict {
+	return &HashDict{
+		Buckets: make([]*chainNode, 11),
+	}
+}
+
+func (d *HashDict) Empty() bool {
+	return d.size == 0
+}
+
+func (d *HashDict) Size() int {
+	return d.size
+}
+
+// 这里使用hash函数为f(k)=k%11
+func (d *HashDict) Get(key interface{}) (interface{}, bool) {
+	var bucket int
+	switch key.(type) {
+	case int:
+		bucket = key.(int) % 11
+	case string:
+		var ascii rune
+		for _, v := range key.(string) {
+			ascii += v
+		}
+		bucket = int(ascii) % 11
+	default:
+		// 个人能力有限，仅提供对string与int类型
+		return nil, false
+	}
+	for node := d.Buckets[bucket]; node != nil; node = node.Next {
+		if node.Key == key {
+			return node.Val, true
+		}
+	}
+	return nil, false
+}
+
+func (d *HashDict) Insert(key, val interface{}) bool {
+	var bucket int
+	switch key.(type) {
+	case int:
+		bucket = key.(int) % 11
+	case string:
+		var ascii rune
+		for _, v := range key.(string) {
+			ascii += v
+		}
+		bucket = int(ascii) % 11
+	default:
+		// 个人能力有限，仅提供对string与int类型
+		return false
+	}
+	if d.Buckets[bucket] == nil {
+		d.Buckets[bucket] = &chainNode{
+			Key: key,
+			Val: val,
+		}
+		d.size++
+		return true
+	}
+	for node := d.Buckets[bucket]; node != nil; node = node.Next {
+		if node.Key == key {
+			node.Val = val
+		}
+		if node.Next == nil {
+			node.Next = &chainNode{
+				Key: key,
+				Val: val,
+			}
+			d.size++
+		}
+	}
+	return true
+}
+
+func (d *HashDict) Erase(key interface{}) bool {
+	var bucket int
+	switch key.(type) {
+	case int:
+		bucket = key.(int) % 11
+	case string:
+		var ascii rune
+		for _, v := range key.(string) {
+			ascii += v
+		}
+		bucket = int(ascii) % 11
+	default:
+		// 个人能力有限，仅提供对string与int类型
+		return false
+	}
+	if d.Buckets[bucket] == nil {
+		return true
+	} else if d.Buckets[bucket].Key == key {
+		d.Buckets[bucket] = d.Buckets[bucket].Next
+		d.size--
+	}
+	for node := d.Buckets[bucket]; node.Next != nil; node = node.Next {
+		if node.Next.Key == key {
+			node.Next = node.Next.Next
+			d.size--
+			return true
+		}
+	}
+	return true
+}
+
+```
+
+## 应用
+
+字典（hash实现）的优点就再与基于关键字存取。 
+
+本系列开篇文章说过，我个人是因为某次优化突然脑子转不过来了，于是打算回顾一下相关知识，重开了博客
+
+这里就假设一个大概相似的情景
+
+现在从外界传入了一串字符串，我们需要将之与黑名单对比，并且删去黑名单内字符，输出余下的内容
+
+看上去很简单吧
+
+我当时脑子一抽，写出了第一个版本
+
+``` go 
+func demo(val []string) []string {
+	black := []string{"a", "b", "c"}
+	for i, b := range val {
+		for _, v := range black {
+			if v == b {
+				val = append(val[:i], val[i:]...)
+			}
+		}
+	}
+	return val
+}
+```
+先不论代码是否有点问题，单是这两个for循环一套，直接来了个O(n^2)，就应该感到了深深的难受
+
+那怎么办呢， 用 就用字典（map）吧
+
+``` go
+func demo2(val []string) []string {
+	black := []string{"a", "b", "c"}
+	dict := make(map[string]bool)
+	for _, v := range val {
+		dict[v] = true
+	}
+	for _, v := range black {
+		_, ok := dict[v]
+		if ok {
+			dict[v] = false
+		}
+	}
+	var result []string
+	for k, v := range dict {
+		if v == true {
+			result = append(result, k)
+		}
+	}
+	return result
+}
+```
+明显可见，没有O(n^2)现象
+
+## 总结
+
+这篇文章，写的有点急了。最后在写应用的时候，有点迷茫不知道该怎么说应用了。leetcode上面看了看hash标签的题目，好像也不是很好体现
+
+最后干脆心一横，拿之前脑抽的事情，大概描述一下写出来了。
