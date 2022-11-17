@@ -62,3 +62,8 @@ mathjax: false
 #### 树的度 degree of a tree
 
 指一颗树的所有元素的度的最大值
+
+### 二叉树
+
+
+## 实现
