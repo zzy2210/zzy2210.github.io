@@ -65,5 +65,144 @@ mathjax: false
 
 ### 二叉树
 
+每个元素只有两个子树，并且有序（区分左右子树）的树就是二叉树
 
 ## 实现
+
+因为二叉树的插入可能插入的地方并不是固定的，无法做到一个指令完成插入。而二叉树的主要知识点就是四种遍历。
+
+所以这里主要谈及二叉树的四种遍历，所以也不给出接口了。
+
+
+
+后续在搜索树等文章可能会提出接口。
+
+```go
+
+type BinaryTree struct {
+	size int
+ 	node *Node
+}
+
+type Node struct {
+	val interface{}
+	left *Node
+	right *Node
+}
+
+```
+
+#### 前序遍历
+
+前序遍历，便是先访问一个节点，再访问它的左子树，随后访问它的右子树
+
+比如一棵树是
+```
+                 1
+        2               3
+4           5       6          7  
+```
+
+那么它的前序遍历的结果就是 1 2 4 5 3 6 7
+
+```go
+func (t *BinaryTree) PreOrder() {
+	preOrder(t.Node)
+}
+
+func preOrder(node *Node) {
+	if node != nil {
+		fmt.Println(node.Val)
+		preOrder(node.Left)
+		preOrder(node.Right)
+	}
+}
+```
+
+#### 中序遍历
+
+中序遍历就是先访问节点的左子树，然后访问它本身，再访问右子树
+
+依旧是上面的树
+
+```
+                 1
+        2               3
+4           5       6          7  
+```
+它的结果是 4 2 5 1 6 3 7
+
+```go
+func (t *BinaryTree) InOrder() {
+	inOrder(t.Node)
+}
+
+func inOrder(node *Node) {
+	if node != nil {
+		inOrder(node.Left)
+		fmt.Println(node)
+		inOrder(node.Right)
+	}
+}
+```
+
+#### 后序遍历
+
+后续遍历则是先访问左右子树，最后访问它本身
+
+```
+                 1
+        2               3
+4           5       6          7  
+```
+
+它的结果是 4 5 2 6 7 3 1
+
+```go
+func (t *BinaryTree) PostOrder() {
+	postOrder(t.Node)
+}
+
+func postOrder(node *Node) {
+	if node != nil {
+		postOrder(node.Left)
+		postOrder(node.Right)
+		fmt.Println(node.Val)
+	}
+}
+
+```
+
+#### 层次遍历
+
+层次遍历就与前面三种完全不同了，前面三种看着就很简单，递归就完事了，层次遍历则不同
+
+如果大家写过leetcode相关的题目的话就会注意到，中序、后序遍历是简单题，而层次遍历是中等
+
+层次遍历便是按层访问，在同一层中按从左往右的顺序访问
+
+如上面的
+
+```
+                 1
+        2               3
+4           5       6          7  
+```
+它的输出结果就是 1 2 3 4 5 6 7
+
+这里的思路是创建一个队列，一颗树非空的情况下，先加入它自己与他的左右节点。最后加入它左右节点的左右节点，如此遍历
+
+```go
+func (t *BinaryTree) LevelOrder() {
+	queue := queue.LinkedQueue{}
+	node := t.Node
+
+	if node != nil {
+		fmt.Println(node.Val)
+		queue.Push(node.Left)
+		queue.Push(node.Right)
+		queueNode, _ := queue.Pop()
+		node = queueNode.(*Node)
+	}
+}
+```
