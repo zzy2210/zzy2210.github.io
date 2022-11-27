@@ -197,12 +197,28 @@ func (t *BinaryTree) LevelOrder() {
 	queue := queue.LinkedQueue{}
 	node := t.Node
 
-	if node != nil {
+	for node != nil {
 		fmt.Println(node.Val)
-		queue.Push(node.Left)
-		queue.Push(node.Right)
+		if node.Left != nil {
+			queue.Push(node.Left)
+		}
+		if node.Right != nil {
+			queue.Push(node.Right)
+		}
 		queueNode, _ := queue.Pop()
 		node = queueNode.(*Node)
 	}
 }
 ```
+
+## 结语
+
+这篇文章，咕了一两个星期，有点抱歉。
+
+看到文章的变化应该就能感受到我的纠结，我一开始想要做到像之前的文章一样写出一个完整的实现，但是想不到该如何抽象。最终还是只写了四种遍历。
+
+应用方面一时半会也想不到应该用什么。层次遍历甚至算是leetcode里面的中等题目。。。
+
+其次就是，中途又被朋友拉去打游戏了，有点颓废。
+
+现在收拾收拾，继续前进。
