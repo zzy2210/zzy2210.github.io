@@ -2,12 +2,12 @@
 title: "数据结构-二叉树与其他树"
 date: 2022-11-14T20:46:54+08:00
 lastmod: 2022-11-14T20:46:54+08:00
-draft: true
-keywords: []
-description: ""
-tags: []
-categories: []
-author: ""
+draft: false
+keywords: ["go","data structure"]
+description: "完成对二叉树的遍历讲解与实现"
+tags: ["data structure"]
+categories: ["go","data structure"]
+author: "y1nhui"
 
 # Uncomment to pin article to front page
 # weight: 1
