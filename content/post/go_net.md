@@ -74,30 +74,14 @@ CIDR，即无类域间路由（Classless Inter-Domain Routing）可以将路由�
 
 ###  IP/CIDR 与 IP netmask 的转换
 
+
 ``` GO
-package main
-
-import (
-	"fmt"
-	"log"
-	"net"
-)
-
-func main() {
-	test := "10.10.3.24/24"
-	v, err := CIDRToIPNetmase(test)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println("tell me v ", v)
-}
-
 type IpNetmask struct {
 	IP      string
 	Netmask string
 }
 
-func CIDRToIPNetmase(cidr string) (*IpNetmask, error) {
+ strings.Join(s, ".")func CIDRToIPNetmase(cidr string) (*IpNetmask, error) {
 	_, ipNet, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return nil, fmt.Errorf("parse CIDR failed: err= %v", err)
@@ -111,14 +95,19 @@ func CIDRToIPNetmase(cidr string) (*IpNetmask, error) {
 			netmask[i] = 1
 		}
 	}
+	fmt.Println("tell me netmask ", netmask)
 	return &IpNetmask{
 		IP:      ipNet.IP.String(),
-		Netmask: fmt.Sprint("%s.%s.%s.%s", string(netmask[:8]), string(netmask[8:16]), string(netmask[16:32]), string(netmask[24:32])),
+		Netmask: fmt.Sprintf("%s.%s.%s.%s", string(netmask[:8]), string(netmask[8:16]), string(netmask[16:32]), string(netmask[24:32])),
 	}, nil
 }
-
-func SubnetToNetmask(sub int) (string, error) {
-	return "", nil
-}
-
 ```
+
+```go
+netmask, bits := net.IPv4Mask(255, 255, 255, 248).Size()
+```
+
+### CIDR 转换为 地址段
+
+
+### 判断某IP是否在CIDR内
