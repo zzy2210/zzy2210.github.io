@@ -2,12 +2,12 @@
 title: "go CIDR的各种转换"
 date: 2023-02-17T23:31:04+08:00
 lastmod: 2023-02-17T23:31:04+08:00
-draft: true
-keywords: []
+draft: false
+keywords: ["go"]
 description: ""
-tags: []
-categories: []
-author: ""
+tags: ["go"]
+categories: ["go"]
+author: "y1nhui"
 
 # Uncomment to pin article to front page
 # weight: 1
@@ -74,6 +74,7 @@ CIDR，即无类域间路由（Classless Inter-Domain Routing）可以将路由�
 
 ###  IP/CIDR 与 IP netmask 的转换
 
+IP/CIDR 转换为 ip与netmask
 
 ``` GO
 type IpNetmask struct {
@@ -81,49 +82,79 @@ type IpNetmask struct {
 	Netmask string
 }
 
- strings.Join(s, ".")func CIDRToIPNetmase(cidr string) (*IpNetmask, error) {
+func CIDRToIPNetmase(cidr string) (*IpNetmask, error) {
 	_, ipNet, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return nil, fmt.Errorf("parse CIDR failed: err= %v", err)
 	}
-	// 直接使用 ipNet.Mask.String() 会输出一个十六进制
-
 	ones, _ := ipNet.Mask.Size()
-	mask := net.CIDRMask(ones,32)
+	mask := net.CIDRMask(ones, 32)
 	return &IpNetmask{
 		IP:      ipNet.IP.String(),
-		Netmask: net.IP(mask).String,
+		Netmask: net.IP(mask).String(),
 	}, nil
 }
 ```
+上文中为了得到perfix 或者说 子网掩码我们做了多次操作，但是在 go 1.18之后，net/netip包提出了一个新的方法可以快速得到
+
+```go 
+	netip.ParsePrefix(t)
+```
+该方法会在返回一个address与int类型的perfix	
+
+netmask 反向转换
 
 ```go
-netmask, bits := net.IPv4Mask(255, 255, 255, 248).Size()
+func netmaskToSub(mask string) (int, error) {
+	masks := strings.Split(mask, ".")
+	if len(masks) != 4 {
+		return 0, fmt.Errorf("invalid mask, mask: %s", mask)
+	}
+	var subs []int
+	for _, i := range masks {
+		one, err := strconv.Atoi(i)
+		if err != nil {
+			return 0, fmt.Errorf("invalid mask, mask: %s", mask)
+		}
+		subs = append(subs, one)
+	}
+	ones, _ := net.IPv4Mask(byte(subs[0]), byte(subs[1]), byte(subs[2]), byte(subs[3])).Size()
+	return ones, nil
+}netmask, bits := net.IPv4Mask(255, 255, 255, 248).Size()
 ```
 
 ### CIDR 转换为 地址段
 
 ```go
- ip,ipnet,_ := net.ParseCIDR(address)
-var ips []string
-for ip:= ip.Mask(ipnet.Mask);ipnet.Contains(ip);inc(ip){
-ips = append(ips,ip.string)
+func CIDRtoIPRange(address string) (string, error) {
+	ip, ipnet, err := net.ParseCIDR(address)
+	if err != nil {
+		return "", fmt.Errorf("parse cidr failedL err= %v", err)
+	}
+	var ips []string
+	for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+		ips = append(ips, ip.String())
+	}
+	return fmt.Sprintf("%s-%s", ips[0], ips[len(ips)-1]), nil
 }
-return fmt.Sprintf("%s-%s",ips[0],ips[len(ips)-1])
 
-
-func inc(ip net.IP){
-	for j:= len(ip) -1;j>0;j-- {
-		ip[i]++
-		if ip[j]>0 {
+func inc(ip net.IP) {
+	for j := len(ip) - 1; j > 0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
 			break
 		}
 	}
 }
 ```
-
 ### 判断某IP是否在CIDR内
-
+这个没什么做的，前文通过`net.ParseCIDR`方法得出的 ipNet 有一个方法就是 contains  判断输入ip是否在其内，在的话返回true
 ```go
 ipnet.Contains()
 ```
+
+## 总结
+
+本文介绍了 ipCIDR 形式转换为 ip ，网关，ip段以及判断一个ip是否在一个ipcidr内的方法。
+
+其实最开始是打算从0开始实现的，结果在写的过程中发现官方库提供了很多方法，就直接使用了
