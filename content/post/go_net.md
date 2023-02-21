@@ -89,16 +89,10 @@ type IpNetmask struct {
 	// 直接使用 ipNet.Mask.String() 会输出一个十六进制
 
 	ones, _ := ipNet.Mask.Size()
-	netmask := make([]byte, 32)
-	for i := range netmask {
-		if i < ones {
-			netmask[i] = 1
-		}
-	}
-	fmt.Println("tell me netmask ", netmask)
+	mask := net.CIDRMask(ones,32)
 	return &IpNetmask{
 		IP:      ipNet.IP.String(),
-		Netmask: fmt.Sprintf("%s.%s.%s.%s", string(netmask[:8]), string(netmask[8:16]), string(netmask[16:32]), string(netmask[24:32])),
+		Netmask: net.IP(mask).String,
 	}, nil
 }
 ```
@@ -109,5 +103,27 @@ netmask, bits := net.IPv4Mask(255, 255, 255, 248).Size()
 
 ### CIDR 转换为 地址段
 
+```go
+ ip,ipnet,_ := net.ParseCIDR(address)
+var ips []string
+for ip:= ip.Mask(ipnet.Mask);ipnet.Contains(ip);inc(ip){
+ips = append(ips,ip.string)
+}
+return fmt.Sprintf("%s-%s",ips[0],ips[len(ips)-1])
+
+
+func inc(ip net.IP){
+	for j:= len(ip) -1;j>0;j-- {
+		ip[i]++
+		if ip[j]>0 {
+			break
+		}
+	}
+}
+```
 
 ### 判断某IP是否在CIDR内
+
+```go
+ipnet.Contains()
+```
