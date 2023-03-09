@@ -7,7 +7,7 @@ draft: true
 kafka启动：
 1. 启动zooker: `zookeeper-server-start.sh config/zookeeper.properties`
 2. 启动kafka : `kafka-server-start.sh config/server.properties`
-3. 创建topis `kafka-topic.sh --zookeeper 127.0.0.1:2181 --create cloudbg --partition 1 --replication-factor 1`
+3. 创建topis `kafka-topic.sh --zookeeper 127.0.0.1:2181 --create --topic cloudbg --partitions 1 --replication-factor 1`
 
 
 
