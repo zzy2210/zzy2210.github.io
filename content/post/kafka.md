@@ -1,7 +1,7 @@
 ---
 title: "kafak 集群搭建"
-date: 2023-03-27T10:03:31+08:0
-lastmod: 2023-03-27T10:03:31+08:0
+date: 2023-03-27T17:45:08+08:00
+lastmod: 2023-03-27T17:45:08+08:00 
 draft: false
 keywords: ["kafka"]
 description: "完成基于内置zookeeper的kafka集群构建"
