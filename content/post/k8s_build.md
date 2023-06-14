@@ -96,6 +96,8 @@ $ apt install -y kubelet=1.18.17-00 kubeadm=1.18.17-00 kubectl=1.18.17-00
 
 之后标记工具，防止更新
 
+`apt-mark hold kubelet kubeadm kubectl`
+
 ## 创建集群
 
 使用 yaml 文件
