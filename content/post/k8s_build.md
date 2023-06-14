@@ -1,10 +1,10 @@
 ---
 title: "kubernetes-环境搭建"
-date: 2023-06-14T17:45:08+08:00
-lastmod: 2023-06-14T17:45:08+08:00 
+date: 2023-06-14T17:35:08+08:00
+lastmod: 2023-06-14T17:35:08+08:00 
 draft: false
 keywords: ["kubernetes","云原生"]
-description: "完成k8s的集群环境搭建"
+description: "完成k8s的单节点环境搭建"
 tags: ["kubernetes"]
 keywords: ["kubernetes","云原生"]
 author: "y1nhui"
