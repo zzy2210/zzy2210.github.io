@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title> - 黑白の世界</title><meta name="Description" content="一位前安全现Go云开发的博客"><meta property="og:title" content="" />
+<meta property="og:description" content="打造linux开发环境2.0 前言 笔者曾经写过一篇《打造可移植linux-go开发环境》主要是用docker 为内网机器提供 vim go 开发能力 现在笔者" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/-linux_dev/" /><meta property="article:section" content="post" />
+
+<meta property="og:site_name" content="黑白の世界" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="打造linux开发环境2.0 前言 笔者曾经写过一篇《打造可移植linux-go开发环境》主要是用docker 为内网机器提供 vim go 开发能力 现在笔者"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/post/-linux_dev/" /><link rel="prev" href="http://localhost:1313/post/k8s%E6%BA%90%E7%A0%81/" /><link rel="next" href="http://localhost:1313/post/%E9%93%BE%E8%A1%A8/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/post\/-linux_dev\/"
+        },"genre": "post","wordcount":  1499 ,
+        "url": "http:\/\/localhost:1313\/post\/-linux_dev\/","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "y1nhui"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="黑白の世界">黑白の世界</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/post/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/" title="About"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="黑白の世界">黑白の世界</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/post/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="About">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster"></h1><div class="content" id="content"><h1 id="打造linux开发环境20">打造linux开发环境2.0</h1>
+<h2 id="前言">前言</h2>
+<p>笔者曾经写过一篇《打造可移植linux-go开发环境》主要是用docker 为内网机器提供 vim go 开发能力
+现在笔者换了家公司做云原生，开发环境也可以直接联通公网。于是打算写一篇新的 linux 开发环境，目标是优化vim开发体验，
+并且增加k8s支持等</p>
+<h2 id="tmux">tmux</h2>
+<p>一个简单的分屏能力，通过该软件可以在终端分屏</p>
+<p><code>apt install tmux</code></p>
+<p>使用tmux只是为了分屏能力，更多的功能不是很需要，使用tmux 只需要在终端输入 <code>tmux</code></p>
+<p>所以只需要记录几个关键的快捷键就好</p>
+<ul>
+<li>退出该session ctrl+d</li>
+<li>左右分屏 ctrl+b+%</li>
+<li>上下分屏 ctrl+b+&quot;</li>
+<li>分屏间移动 ctrl+b+方向键</li>
+</ul>
+<h3 id="tmux-美化">tmux 美化</h3>
+<p>因为原生的 tmux 不是很符合笔者审美，需要进行美化
+这里选择的是 <a href="https://github.com/gpakosz/.tmux" target="_blank" rel="noopener noreffer ">tmux</a></p>
+<p>安装方法很简单</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> <span class="nb">cd</span> ~
+</span></span><span class="line"><span class="cl"> git clone https://github.com/gpakosz/.tmux.git
+</span></span><span class="line"><span class="cl"> ln -s -f .tmux/.tmux.conf
+</span></span><span class="line"><span class="cl"> cp .tmux/.tmux.conf.local .
+</span></span></code></pre></div><h2 id="k9s">k9s</h2>
+<p>K9s是一个基于终端的界面化工具，功能丰富，可以方便地管理和监控Kubernetes集群。它提供了查看、编辑、删除和搜索资源的功能，还支持查看实时日志和执行命令。</p>
+<p><a href="https://k9scli.io/" target="_blank" rel="noopener noreffer ">k9s官网</a></p>
+<p>k9s 的官网只给出了 通过 brew 与 源码编译两种方法，但是如果查看github文档会发现还有其他方法。</p>
+<p>这里笔者先是尝试了源码编译与基于 go install 安装的方式</p>
+<p><code>go install github.com/derailed/k9s@v0.27.4</code></p>
+<p>但是发现，笔者环境的go版本是 <code>1.18.10</code> 而如果直接源码编译最新版（当前为0.27.4）或 go install。 会出现部分包需要更高版本的go支持的问题。所以最终采用了基于<code>webi</code>的方式</p>
+<p><code>curl -sS https://webinstall.dev/k9s | bash</code></p>
+<p>运行结束后有如下命令提醒:</p>
+<p><code>Installed 'k9s v0.27.4' as /root/.local/bin/k9s</code></p>
+<p>接下来我们只要在<code>/root/.local/bin 加入环境变量即可</code></p>
+<p><code>export PATH=$PATH:/root/.local/bin</code></p>
+<h2 id="nvim">nvim</h2>
+<p>在发现nvim似乎可以原生支持lsp后，笔者决定将nvim设置成开发工具，而非vim</p>
+<p>因为过去使用 centos 经常出现安装到极其落后的 vim 版本的情况。所以笔者此处并不打算通过 apt 包管理来安装neovim （同时安装测试了一下，neovim安装了0.4.3版本，但是当前neovim已经发行0.9.1版本）</p>
+<ol>
+<li>获取 nvim 发行版</li>
+</ol>
+<p><code>https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz</code></p>
+<ol start="2">
+<li>解压</li>
+</ol>
+<p><code>tar -C /usr/local -xzf nvim-linux64.tar.gz</code></p>
+<ol start="3">
+<li>修改PATH</li>
+</ol>
+<p><code>export PATH=$PATH:/usr/local/nvim-linux64/bin</code></p>
+<p>修改之后，nvim便安装完成了</p>
+<h3 id="nvim-配置与插件管理">nvim 配置与插件管理</h3>
+<p>在 vim 配置中，笔者使用 vim-plug 作为插件管理工具。
+而在 nvim 中则使用 lazy.nvim 作为插件管理工具</p>
+<p>该插件管理工具的安装有三个前提：</p>
+<ul>
+<li>nvim &gt;= 0.8.0</li>
+<li>git &gt;= 2.19.0</li>
+</ul>
+<p>安装只需在 <code>init.lua</code> 内引入对应配置即可，不过当前环境暂无 <code>init.lua</code> 相关，需要配置</p>
+<p>创建 nvim 文件夹
+<code>mkdir ~/.config/nvim</code></p>
+<p>nvim 文件夹 路径树</p>
+<p>basic.lua 内容</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- utf8</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.g</span><span class="p">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&#34;UTF-8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">fileencoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- jk移动时光标下上方保留8行</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">scrolloff</span> <span class="o">=</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">sidescrolloff</span> <span class="o">=</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 使用相对行号</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.wo</span><span class="p">.</span><span class="n">number</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- vim.wo.relativenumber = true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 高亮所在行</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.wo</span><span class="p">.</span><span class="n">cursorline</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 显示左侧图标指示列</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.wo</span><span class="p">.</span><span class="n">signcolumn</span> <span class="o">=</span> <span class="s2">&#34;yes&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 右侧参考线，超过表示代码太长了，考虑换行</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- vim.wo.colorcolumn = &#34;80&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 缩进2个空格等于一个Tab</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">tabstop</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.bo</span><span class="p">.</span><span class="n">tabstop</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">softtabstop</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">shiftround</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- &gt;&gt; &lt;&lt; 时移动长度</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">shiftwidth</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.bo</span><span class="p">.</span><span class="n">shiftwidth</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 新行对齐当前行，空格替代tab</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">expandtab</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.bo</span><span class="p">.</span><span class="n">expandtab</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">autoindent</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.bo</span><span class="p">.</span><span class="n">autoindent</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">smartindent</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 搜索大小写不敏感，除非包含大写</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">ignorecase</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">smartcase</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 搜索不要高亮</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">hlsearch</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 边输入边搜索</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">incsearch</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 使用增强状态栏后不再需要 vim 的模式提示</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">showmode</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 命令行高为2，提供足够的显示空间</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">cmdheight</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 当文件被外部程序修改时，自动加载</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">autoread</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.bo</span><span class="p">.</span><span class="n">autoread</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 禁止折行</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">wrap</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.wo</span><span class="p">.</span><span class="n">wrap</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 行结尾可以跳到下一行</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">whichwrap</span> <span class="o">=</span> <span class="s1">&#39;b,s,&lt;,&gt;,[,],h,l&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 允许隐藏被修改过的buffer</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 鼠标支持</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">mouse</span> <span class="o">=</span> <span class="s2">&#34;a&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 禁止创建备份文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">backup</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">writebackup</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">swapfile</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- smaller updatetime </span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">updatetime</span> <span class="o">=</span> <span class="mi">300</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 等待mappings</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">timeoutlen</span> <span class="o">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- split window 从下边和右边出现</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">splitbelow</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">splitright</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 自动补全不自动选中</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.g</span><span class="p">.</span><span class="n">completeopt</span> <span class="o">=</span> <span class="s2">&#34;menu,menuone,noselect,noinsert&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 样式</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">background</span> <span class="o">=</span> <span class="s2">&#34;dark&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">termguicolors</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">termguicolors</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 不可见字符的显示，这里只把空格显示为一个点</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">list</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">listchars</span> <span class="o">=</span> <span class="s2">&#34;space:·&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 补全增强</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">wildmenu</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- Dont&#39; pass messages to |ins-completin menu|</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">shortmess</span> <span class="o">=</span> <span class="n">vim.o</span><span class="p">.</span><span class="n">shortmess</span> <span class="o">..</span> <span class="s1">&#39;c&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">pumheight</span> <span class="o">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- always show tabline</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">showtabline</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span></code></pre></div><h3 id="安装-lazylua">安装 lazy.lua</h3>
+<p>首先在 lua 文件夹下 创建 lazy.lua 文件
+内容：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">lazypath</span> <span class="o">=</span> <span class="n">vim.fn</span><span class="p">.</span><span class="n">stdpath</span><span class="p">(</span><span class="s2">&#34;data&#34;</span><span class="p">)</span> <span class="o">..</span> <span class="s2">&#34;/lazy/lazy.nvim&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="ow">not</span> <span class="n">vim.loop</span><span class="p">.</span><span class="n">fs_stat</span><span class="p">(</span><span class="n">lazypath</span><span class="p">)</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vim.fn</span><span class="p">.</span><span class="n">system</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;git&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;clone&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;--filter=blob:none&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;https://github.com/folke/lazy.nvim.git&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;--branch=stable&#34;</span><span class="p">,</span> <span class="c1">-- latest stable release</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lazypath</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">rtp</span><span class="p">:</span><span class="n">prepend</span><span class="p">(</span><span class="n">lazypath</span><span class="p">)</span>
+</span></span></code></pre></div><p>之后在 init.lua 中加入</p>
+<p><code>require(&quot;lua.lazy&quot;)</code></p>
+<p>再次打开即第一次安装 lazy.lua</p>
+<p>之后为 lazy.lua 添加 neo lsp支持，测试是否安装成功</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">require</span><span class="p">(</span><span class="s2">&#34;lazy&#34;</span><span class="p">).</span><span class="n">setup</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">-- Other plugins ...</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;neovim/nvim-lspconfig&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">config</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Configuration for nvim-lspconfig</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">end</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">-- Other plugins ...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>追加写入后，再次打开 nvim 便会显示安装界面</p>
+</div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.7">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/zzy2210" target="_blank">y1nhui</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp">皖ICP备19008609号-1</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
