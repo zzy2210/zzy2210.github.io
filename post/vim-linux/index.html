@@ -1,0 +1,447 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>打造可移植 linux-go 开发环境 - 黑白の世界</title><meta name=Description content="基于docker镜像构建vim开发环境"><meta property="og:title" content="打造可移植 linux-go 开发环境"><meta property="og:description" content="基于docker镜像构建vim开发环境"><meta property="og:type" content="article"><meta property="og:url" content="https://zzy2210.github.io/post/vim-linux/"><meta property="article:published_time" content="2022-08-15T16:57:03+08:00"><meta property="article:modified_time" content="2022-10-29T16:57:03+08:00"><meta property="og:site_name" content="黑白の世界"><meta name=twitter:card content="summary"><meta name=twitter:title content="打造可移植 linux-go 开发环境"><meta name=twitter:description content="基于docker镜像构建vim开发环境"><meta name=application-name content="My cool site"><meta name=apple-mobile-web-app-title content="My cool site"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://zzy2210.github.io/post/vim-linux/><link rel=prev href=https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/><link rel=next href=https://zzy2210.github.io/post/stack/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"打造可移植 linux-go 开发环境","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/zzy2210.github.io\/post\/vim-linux\/"},"genre":"post","keywords":"development, vim","wordcount":5140,"url":"https:\/\/zzy2210.github.io\/post\/vim-linux\/","datePublished":"2022-08-15T16:57:03+08:00","dateModified":"2022-10-29T16:57:03+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"y1nhui"},"description":"基于docker镜像构建vim开发环境"}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':('auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark'))&&document.body.setAttribute('theme','dark');</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=黑白の世界>黑白の世界</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/post/>文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/friend/>友链 </a><a class=menu-item href=/about/ title=About>About </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=黑白の世界>黑白の世界</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=/post/>文章</a><a class=menu-item href=/tags/>标签</a><a class=menu-item href=/categories/>分类</a><a class=menu-item href=/friend/>友链</a><a class=menu-item href=/about/ title=About>About</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><main class=main><div class=container><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">打造可移植 linux-go 开发环境</h1><div class=content id=content><h1 id=打造可移植-linux-go-开发环境>打造可移植 linux-go 开发环境</h1><h2 id=前言>前言</h2><p>因为公司是内外网隔离环境，且内网机器屏幕素质太差，个人打算通过外网堡垒机进入内网linux机器上使用进行开发。</p><p>出于避免因网络问题导致的各种插件安装失败与方便迁移的目的，本人打算使用docker构建开发环境的镜像。这样只需要在外网导出镜像文件传入内网机器，便可使用，做到开箱即用。</p><p>本文主要内容是操作记录日志，并尽量附带指令解析。内容分为一下部分：</p><ul><li>系统环境构建</li><li>vim编辑器打造</li></ul><h2 id=系统环境构建>系统环境构建</h2><p>系统描述：</p><ul><li>ubuntu</li><li>go 1.19</li><li>vim</li><li>gcc & gcc++</li><li>make</li><li>vim</li><li>and so on</li></ul><h3 id=ubuntu-构建>ubuntu 构建</h3><p>使用docker 下载ubuntu镜像
+<code>docker pull ubuntu</code></p><p>之后运行容器
+<code>docker exec -it go-dev bash</code></p><p>进入容器后，出于习惯换源代，更新</p><p><code>sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list</code></p><p><code>apt update && apt upgrade</code></p><p>ps:目前默认源也是可以使用的，速度大概几百k，说快不快说慢不慢的，只是个人喜欢使用中科大的源。</p><p>之后就是我们的环境安装
+<code>apt install build-essential vim net-tools git sudo -y</code></p><p>build-essential 可以安装包函 gcc g++ make 的 GNU 编辑器集合，GNU 调试器，和其他编译软件所必需的开发库和工具。</p><h3 id=镜像制作>镜像制作</h3><p>到了这一步发现因为启动容器时忘了-v，导致目前无法进行本机与容器的文件交互，所以打算先制作一次镜像，然后再启动容器</p><p>获取容器信息：</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://i.bmp.ovh/imgs/2022/08/08/0e2b84582e41d389.png data-srcset="https://i.bmp.ovh/imgs/2022/08/08/0e2b84582e41d389.png, https://i.bmp.ovh/imgs/2022/08/08/0e2b84582e41d389.png 1.5x, https://i.bmp.ovh/imgs/2022/08/08/0e2b84582e41d389.png 2x" data-sizes=auto alt=https://i.bmp.ovh/imgs/2022/08/08/0e2b84582e41d389.png title=容器列表></p><p>接着使用docker commit 创建容镜像</p><p><code>docker commit -a "y1nhui" -m "ubuntu-dev" 7658d10be2dd go-dev:v1</code></p><p>命令描述： <code>-a</code> 作者 <code>-m</code> 描述 <code>7658...</code>容器id <code>go-dev:v1</code>新建的镜像名与版本</p><p>使用<code>docker images</code> 可见镜像已创建：
+<img class=lazyload src=/svg/loading.min.svg data-src=https://i.bmp.ovh/imgs/2022/08/08/38314694da553520.png data-srcset="https://i.bmp.ovh/imgs/2022/08/08/38314694da553520.png, https://i.bmp.ovh/imgs/2022/08/08/38314694da553520.png 1.5x, https://i.bmp.ovh/imgs/2022/08/08/38314694da553520.png 2x" data-sizes=auto alt=https://i.bmp.ovh/imgs/2022/08/08/38314694da553520.png title=镜像列表></p><h3 id=go环境搭建>go环境搭建</h3><p>接着便是启动新容器，挂载/root到~/work</p><p><code>docker run -itd -v /Users/y1nhui/WorkSpace/:/root/ --name dev go-dev:v1</code></p><p>下载了go1.19后，执行命令</p><p><code>tar -C /usr/local -xzf go1.19.linux-amd64.tar.gz</code></p><p>编写/etc/profile 增加 <code>export PATH=$PATH:/usr/local/go/bin</code></p><p><code>source /etc/profile</code></p><p>运行 <code>go version</code> 可见<img class=lazyload src=/svg/loading.min.svg data-src=https://i.bmp.ovh/imgs/2022/08/08/4c6ff045f00739ff.png data-srcset="https://i.bmp.ovh/imgs/2022/08/08/4c6ff045f00739ff.png, https://i.bmp.ovh/imgs/2022/08/08/4c6ff045f00739ff.png 1.5x, https://i.bmp.ovh/imgs/2022/08/08/4c6ff045f00739ff.png 2x" data-sizes=auto alt=https://i.bmp.ovh/imgs/2022/08/08/4c6ff045f00739ff.png title=go版本></p><h3 id=omz>omz</h3><p>需求总是测试中不断出现的，想用omz了
+<code>apt install zsh wget -y</code></p><p><code>sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"</code></p><p>如此的话，还需要变更go的环境变量
+<code>vim ~/.oh-my-zsh/oh-my-zsh.sh</code>，
+添加<code>export PATH=$PATH:/usr/local/go/bin:/root/go/bin</code></p><p>添加指令<code>go env -w GOBIN="/root/go/bin"</code>。将gobin路径加入了path中，之后我们一些通过go install 安装的二进制文件便可以正常使用</p><p>安装到这里，再更新一次 docker 镜像，同时我在 docker hub 创建了一个仓库，我们可以push到远端</p><p><code>docker commit -m "完成go环境安装与omz" 97ebe4cda8d0 y1nhui/go-dev</code></p><p><code>docker login</code></p><p><code>docker push y1nhui/go-dev:latest</code></p><h3 id=ssh-server>ssh-server</h3><p>想测试的时候发现忘记安装ssh-server了 安装配置一下
+<code>apt install openssh-server</code></p><p><code>vim /etc/ssh/sshd_config</code></p><p><code>PermitRootLogin yes</code>
+允许一下root远程登录</p><h2 id=vim>vim</h2><p>来到重头戏了，参考一下他人的博客</p><p><a href=https://learnku.com/articles/24924 target=_blank rel="noopener noreffer">将 VIM 打造成 go 语言的 ide</a></p><p>本来是想直接使用这位的配置的，但是因为部分插件和我想用的不太一样，同时为了省去读者再打开一个网页的步骤。我个人还是会在文章里给出vimrc的内容。</p><p>首先通过修改~/.vimrc 来更改vim配置</p><p>一般情况下没有~/.vimrc。这是因为～/.vimrc是用户级的配置文件，一般需要用户手动创建.</p><p>同时可能会发现vim中文乱码问题</p><p>修改方法：
+vim内使用指令：<code>:set encoding=utf8</code></p><div class=highlight><pre class=chroma><code class=language-vim data-lang=vim><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span>  <span class=m>3</span> <span class=c>&#34; vim 内置配置</span><span class=err>
+</span><span class=err></span>  <span class=m>4</span> &#34;<span class=p>==============================================================================</span><span class=err>
+</span><span class=err></span>  <span class=m>5</span><span class=err>
+</span><span class=err></span>  <span class=m>6</span> <span class=c>&#34; 设置 vimrc 修改保存后立刻生效，不用在重新打开</span><span class=err>
+</span><span class=err></span>  <span class=m>7</span> <span class=c>&#34; 建议配置完成后将这个关闭</span><span class=err>
+</span><span class=err></span>  <span class=m>8</span> <span class=nx>autocmd</span> <span class=nx>BufWritePost</span> $<span class=nx>MYVIMRC</span> <span class=nx>source</span> $<span class=nx>MYVIMRC</span><span class=err>
+</span><span class=err></span>  <span class=m>9</span><span class=err>
+</span><span class=err></span> <span class=m>10</span> <span class=c>&#34; 关闭兼容模式</span><span class=err>
+</span><span class=err></span> <span class=m>11</span> <span class=nx>set</span> <span class=nx>nocompatible</span><span class=err>
+</span><span class=err></span> <span class=m>12</span><span class=err>
+</span><span class=err></span> <span class=m>13</span> <span class=c>&#34; 设置编码 utf-8</span><span class=err>
+</span><span class=err></span> <span class=m>14</span> <span class=nx>set</span> <span class=nx>encoding</span><span class=p>=</span><span class=nx>utf8</span><span class=err>
+</span><span class=err></span> <span class=m>15</span><span class=err>
+</span><span class=err></span> <span class=m>16</span> <span class=nx>set</span> <span class=nx>nu</span> <span class=c>&#34; 设置行号</span><span class=err>
+</span><span class=err></span> <span class=m>17</span> <span class=nx>set</span> <span class=nx>cursorline</span> <span class=c>&#34;突出显示当前行</span><span class=err>
+</span><span class=err></span> <span class=m>18</span> <span class=s2>&#34; set cursorcolumn &#34;</span> <span class=nx>突出显示当前列</span><span class=err>
+</span><span class=err></span> <span class=m>19</span> <span class=nx>set</span> <span class=nx>showmatch</span> <span class=c>&#34; 显示括号匹配</span><span class=err>
+</span><span class=err></span> <span class=m>20</span><span class=err>
+</span><span class=err></span> <span class=m>21</span> <span class=c>&#34; tab 缩进</span><span class=err>
+</span><span class=err></span> <span class=m>22</span> <span class=nx>set</span> <span class=nx>tabstop</span><span class=p>=</span><span class=m>4</span> <span class=c>&#34; 设置Tab长度为4空格</span><span class=err>
+</span><span class=err></span> <span class=m>23</span> <span class=nx>set</span> <span class=nx>shiftwidth</span><span class=p>=</span><span class=m>4</span> <span class=c>&#34; 设置自动缩进长度为4空格</span><span class=err>
+</span><span class=err></span> <span class=m>24</span> <span class=nx>set</span> <span class=nx>autoindent</span> <span class=c>&#34; 继承前一行的缩进方式，适用于多行注释</span><span class=err>
+</span><span class=err></span> <span class=m>25</span><span class=err>
+</span><span class=err></span> <span class=m>26</span> <span class=c>&#34; 定义快捷键的前缀，即&lt;Leader&gt;</span><span class=err>
+</span><span class=err></span> <span class=m>27</span> <span class=k>let</span> <span class=nx>mapleader</span><span class=p>=</span><span class=s2>&#34;;&#34;</span><span class=err>
+</span><span class=err></span> <span class=m>28</span><span class=err>
+</span><span class=err></span> <span class=m>29</span> <span class=c>&#34; ==== 系统剪切板复制粘贴 ====</span><span class=err>
+</span><span class=err></span> <span class=m>30</span> <span class=c>&#34; v 模式下复制内容到系统剪切板</span><span class=err>
+</span><span class=err></span> <span class=m>31</span> <span class=nx>vmap</span> <span class=p>&lt;</span><span class=nx>Leader</span><span class=p>&gt;</span><span class=nx>c</span> <span class=c>&#34;+yy</span><span class=err>
+</span><span class=err></span> <span class=m>32</span> <span class=c>&#34; n 模式下复制一行到系统剪切板</span><span class=err>
+</span><span class=err></span> <span class=m>33</span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>Leader</span><span class=p>&gt;</span><span class=nx>c</span> <span class=c>&#34;+yy</span><span class=err>
+</span><span class=err></span> <span class=m>34</span> <span class=c>&#34; n 模式下粘贴系统剪切板的内容</span><span class=err>
+</span><span class=err></span> <span class=m>35</span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>Leader</span><span class=p>&gt;</span><span class=nx>v</span> <span class=c>&#34;+p</span><span class=err>
+</span><span class=err></span> <span class=m>36</span><span class=err>
+</span><span class=err></span> <span class=m>37</span> <span class=c>&#34; 开启实时搜索</span><span class=err>
+</span><span class=err></span> <span class=m>38</span> <span class=nx>set</span> <span class=nx>incsearch</span><span class=err>
+</span><span class=err></span> <span class=m>39</span> <span class=c>&#34; 搜索时大小写不敏感</span><span class=err>
+</span><span class=err></span> <span class=m>40</span> <span class=nx>set</span> <span class=nx>ignorecase</span><span class=err>
+</span><span class=err></span> <span class=m>41</span> <span class=nx>syntax</span> <span class=nx>enable</span><span class=err>
+</span><span class=err></span> <span class=m>42</span> <span class=nx>syntax</span> <span class=nx>on</span>                    <span class=c>&#34; 开启文件类型侦测</span><span class=err>
+</span><span class=err></span> <span class=m>43</span> <span class=nx>filetype</span> <span class=nx>plugin</span> <span class=nx>indent</span> <span class=nx>on</span>    <span class=c>&#34; 启用自动补全</span><span class=err>
+</span><span class=err></span> <span class=m>44</span><span class=err>
+</span><span class=err></span> <span class=m>45</span> <span class=c>&#34; 退出插入模式指定类型的文件自动保存</span><span class=err>
+</span><span class=err></span> <span class=m>46</span> <span class=nx>au</span> <span class=nx>InsertLeave</span> *.<span class=nx>go</span><span class=p>,</span>*.<span class=nx>sh</span><span class=p>,</span>*.<span class=nx>proto</span> <span class=nx>write</span><span class=err>
+</span></code></pre></div><p>之后下载插件，vim插件管理器 vim-plug</p><p><code>curl -fLo ~/.vim/autoload/plug.vim --create-dirs \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</code></p><p>为了安装ncoc与tagbar等，安装前置工具</p><p>安装node js
+<code>curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - sudo apt-get install -y nodejs</code></p><p>安装 ctags
+<code>sudo apt install universal-ctags</code></p><p>下载之后继续配置vimrc，使用<code>call plug#begin()</code>与<code>call plug#end()</code>做插件列表开始结束提示。</p><div class=highlight><pre class=chroma><code class=language-vim data-lang=vim><span class=nx>call</span> <span class=nx>plug</span>#<span class=nx>begin</span><span class=p>()</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c> &#34; 代码自动完成插件，抛弃vim-go插件</span><span class=err>
+</span><span class=err></span> <span class=nx>Plug</span> <span class=s1>&#39;neoclide/coc.nvim&#39;</span><span class=p>,</span> {<span class=s1>&#39;branch&#39;</span>: <span class=s1>&#39;release&#39;</span>}<span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 查看代码结构</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;majutsushi/tagbar&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34;go-imports</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;mattn/vim-goimports&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; markdown 预览</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;iamcco/markdown-preview.nvim&#39;</span><span class=p>,</span> { <span class=s1>&#39;do&#39;</span>: { <span class=p>-&gt;</span> <span class=nx>mkdp</span>#<span class=nx>util</span>#<span class=nx>install</span><span class=p>()</span> }<span class=p>,</span> <span class=s1>&#39;for&#39;</span>: [<span class=s1>&#39;markdown&#39;</span><span class=p>,</span> <span class=s1>&#39;vim-plug&#39;</span>]}<span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 文件侧栏</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;preservim/nerdtree&#39;</span> <span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; nerdtree -git</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;Xuyuanp/nerdtree-git-plugin&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 底部状态栏</span><span class=err>
+</span><span class=err></span><span class=nx>Plugin</span> <span class=s1>&#39;vim-airline/vim-airline&#39;</span><span class=err>
+</span><span class=err></span><span class=nx>Plugin</span> <span class=s1>&#39;vim-airline/vim-airline-themes&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 文档显示git信息</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;airblade/vim-gitgutter&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; vim-one 主题</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;rakr/vim-one&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; gruvbox主题 </span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;morhetz/gruvbox&#39;</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=nx>call</span> <span class=nx>plug</span>#<span class=nx>end</span><span class=p>()</span><span class=err>
+</span></code></pre></div><p>保存后再次打开vmrc，使用<code>:PlugInstall</code>命令下载安装插件</p><p>此处可能会因网络错误导致下载失败，如果像笔者一样使用proxychains代理工具 则使用这种方法
+<code>proxychains vim ~/.vimrc</code>
+这样便可以为vim进程附加代理</p><p>当然，如果可以直接使用<code>export https_proxy=</code>的方法再好不过</p><h3 id=docker-容器使用宿主机代理--设置相通网卡>docker 容器使用宿主机代理 / 设置相通网卡</h3><p>这里就多了一个问题，如何使用docker访问本机代理。我的代理在127.0.0.1:7777上，如果容器内想使用的话就需要访问到该端口，使用-p映射是不现实的。那么就需要使用 docker network</p><p>linux机器可下docker会自己创建一个docker0网卡，但是mac似乎不会，所以我需要手动创建</p><p><code>docker network create n1</code></p><p>创建后，我们可以使用
+<code>docker network inspect n1</code>
+来查看</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=o>[</span>
+    <span class=o>{</span>
+        <span class=s2>&#34;Name&#34;</span>: <span class=s2>&#34;n1&#34;</span>,
+        <span class=s2>&#34;Id&#34;</span>: <span class=s2>&#34;sha1?&#34;</span>,
+        <span class=s2>&#34;Created&#34;</span>: <span class=s2>&#34;time&#34;</span>,
+        <span class=s2>&#34;Scope&#34;</span>: <span class=s2>&#34;local&#34;</span>,
+        <span class=s2>&#34;Driver&#34;</span>: <span class=s2>&#34;bridge&#34;</span>,
+        <span class=s2>&#34;EnableIPv6&#34;</span>: false,
+        <span class=s2>&#34;IPAM&#34;</span>: <span class=o>{</span>
+            <span class=s2>&#34;Driver&#34;</span>: <span class=s2>&#34;default&#34;</span>,
+            <span class=s2>&#34;Options&#34;</span>: <span class=o>{}</span>,
+            <span class=s2>&#34;Config&#34;</span>: <span class=o>[</span>
+                <span class=o>{</span>
+                    <span class=s2>&#34;Subnet&#34;</span>: <span class=s2>&#34;172.20.0.0/16&#34;</span>,
+                    <span class=s2>&#34;Gateway&#34;</span>: <span class=s2>&#34;172.20.0.1&#34;</span>
+                <span class=o>}</span>
+            <span class=o>]</span>
+        <span class=o>}</span>,
+        <span class=s2>&#34;Internal&#34;</span>: false,
+        <span class=s2>&#34;Attachable&#34;</span>: false,
+        <span class=s2>&#34;Ingress&#34;</span>: false,
+        <span class=s2>&#34;ConfigFrom&#34;</span>: <span class=o>{</span>
+            <span class=s2>&#34;Network&#34;</span>: <span class=s2>&#34;&#34;</span>
+        <span class=o>}</span>,
+        <span class=s2>&#34;ConfigOnly&#34;</span>: false,
+        <span class=s2>&#34;Containers&#34;</span>: <span class=o>{}</span>,
+        <span class=s2>&#34;Options&#34;</span>: <span class=o>{}</span>,
+        <span class=s2>&#34;Labels&#34;</span>: <span class=o>{}</span>
+    <span class=o>}</span>
+<span class=o>]</span>
+</code></pre></div><p>再次创建启动docker容器，指定network，同时使用-h来设定主机名
+<code>docker run -itd -p 6022:22 -h go-dev --network n1 --name dev y1nhui/go-dev</code></p><p>进入容器，使用<code>ping host.docker.internal</code> host.docker.internal是docker容器对宿主机的代指，如此ping便可获得宿主机ip</p><p>接着便可以设定代理</p><h3 id=插件配置>插件配置</h3><p>做完了安装工作后，需要继续插件配置，首先是对nerdtree调整</p><div class=highlight><pre class=chroma><code class=language-vim data-lang=vim> <span class=m>74</span> <span class=c>&#34; Nerdtree 配置</span><span class=err>
+</span><span class=err></span> <span class=m>75</span> <span class=s2>&#34; &#34;</span> <span class=nx>显示行号</span><span class=err>
+</span><span class=err></span> <span class=m>76</span> <span class=k>let</span> <span class=nx>NERDTreeShowLineNumbers</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span><span class=err></span> <span class=m>77</span> <span class=c>&#34; 打开文件时是否显示目录</span><span class=err>
+</span><span class=err></span> <span class=m>78</span> <span class=k>let</span> <span class=nx>NERDTreeAutoCenter</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span><span class=err></span> <span class=m>79</span> <span class=c>&#34; 是否显示隐藏文件</span><span class=err>
+</span><span class=err></span> <span class=m>80</span> <span class=k>let</span> <span class=nx>NERDTreeShowHidden</span><span class=p>=</span><span class=m>0</span><span class=err>
+</span><span class=err></span> <span class=m>81</span> <span class=c>&#34; 设置宽度</span><span class=err>
+</span><span class=err></span> <span class=m>82</span> <span class=c>&#34; let NERDTreeWinSize=31</span><span class=err>
+</span><span class=err></span> <span class=m>83</span> <span class=c>&#34; 忽略一下文件的显示</span><span class=err>
+</span><span class=err></span> <span class=m>84</span> <span class=k>let</span> <span class=nx>NERDTreeIgnore</span><span class=p>=</span>[<span class=s1>&#39;\.pyc&#39;</span><span class=p>,</span><span class=s1>&#39;\~$&#39;</span><span class=p>,</span><span class=s1>&#39;\.swp&#39;</span>]<span class=err>
+</span><span class=err></span> <span class=m>85</span> <span class=c>&#34; 打开 vim 文件及显示书签列表</span><span class=err>
+</span><span class=err></span> <span class=m>86</span> <span class=k>let</span> <span class=nx>NERDTreeShowBookmarks</span><span class=p>=</span><span class=m>2</span><span class=err>
+</span><span class=err></span> <span class=m>87</span><span class=err>
+</span><span class=err></span> <span class=m>88</span> <span class=c>&#34; 在终端启动vim时，共享NERDTree</span><span class=err>
+</span><span class=err></span> <span class=m>89</span> <span class=k>let</span> <span class=nx>g</span>:<span class=nx>nerdtree_tabs_open_on_console_startup</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span></code></pre></div><p>之后配置调色</p><div class=highlight><pre class=chroma><code class=language-vim data-lang=vim><span class=nx>set</span> <span class=nx>termguicolors</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 主题配色</span><span class=err>
+</span><span class=err></span><span class=nx>colorscheme</span> <span class=nx>gruvbox</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 主题背景 dark-深色; light-浅色</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>background</span><span class=p>=</span><span class=nb>dark</span><span class=err>
+</span></code></pre></div><p>之后对ncoc配置</p><p>安装gopls
+<code>go get golang.org/x/tools/gopls@latest</code></p><p>再次进入vimrc，安装ncoc的插件
+<code>:CocInstall coc-go</code> <code>:CocInstall coc-sh</code></p><p>最后贴一下全部配置
+ps：配置文件是根据
+<a href=https://github.com/BroQiang/vim-go-ide target=_blank rel="noopener noreffer">BroQiang</a>仓库为主体更改的。
+因为ncoc更新缘故，部分ncoc配置需要更改，具体为tab与cr部分，本人文件已经完成更改，可直接使用.</p><div class=highlight><pre class=chroma><code class=language-vim data-lang=vim><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 处理 Gnome 终端不能使用 alt 快捷键， 不做这个处理无法在 vim 中映射 alt的快捷键</span><span class=err>
+</span><span class=err></span><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>c</span><span class=p>=</span><span class=s1>&#39;a&#39;</span><span class=err>
+</span><span class=err></span><span class=nx>while</span> <span class=nx>c</span> <span class=p>&lt;=</span> <span class=s1>&#39;z&#39;</span><span class=err>
+</span><span class=err></span>	<span class=nx>exec</span> <span class=s2>&#34;set &lt;A-&#34;</span>.<span class=nx>c</span>.<span class=s2>&#34;&gt;=\e&#34;</span>.<span class=nx>c</span><span class=err>
+</span><span class=err></span>	<span class=nx>exec</span> <span class=s2>&#34;imap \e&#34;</span>.<span class=nx>c</span>.<span class=s2>&#34; &lt;A-&#34;</span>.<span class=nx>c</span>.<span class=s2>&#34;&gt;&#34;</span><span class=err>
+</span><span class=err></span>	<span class=k>let</span> <span class=nx>c</span> <span class=p>=</span> <span class=nx>nr2char</span><span class=p>(</span><span class=m>1</span><span class=p>+</span><span class=nx>char2nr</span><span class=p>(</span><span class=nx>c</span><span class=p>))</span><span class=err>
+</span><span class=err></span><span class=nx>endw</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>timeout</span> <span class=nx>ttimeoutlen</span><span class=p>=</span><span class=m>50</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; ======================== 一些初始配置 ===========================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 关闭兼容模式, 如果需要使用原始的 vi 模式， 配置： set compatible</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 默认就是关闭的， 如果不关，就无法使用 vim 的高级功能，包括下面的配置</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>nocompatible</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 打开文件类型检测</span><span class=err>
+</span><span class=err></span><span class=nx>filetype</span> <span class=nx>plugin</span> <span class=nx>indent</span> <span class=nx>on</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 定义快捷键的前缀，即&lt;Leader&gt; ， 默认是 \ ， 按的时候不太方便</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>mapleader</span><span class=p>=</span><span class=s2>&#34;;&#34;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 记住上次文件打开位置</span><span class=err>
+</span><span class=err></span><span class=k>if</span> <span class=nx>has</span><span class=p>(</span><span class=s2>&#34;autocmd&#34;</span><span class=p>)</span><span class=err>
+</span><span class=err></span>  <span class=nx>au</span> <span class=nx>BufReadPost</span> * <span class=k>if</span> <span class=nx>line</span><span class=p>(</span><span class=s2>&#34;&#39;\&#34;&#34;</span><span class=p>)</span> <span class=p>&gt;</span> <span class=m>1</span> &amp;&amp; <span class=nx>line</span><span class=p>(</span><span class=s2>&#34;&#39;\&#34;&#34;</span><span class=p>)</span> <span class=p>&lt;=</span> <span class=nx>line</span><span class=p>(</span><span class=s2>&#34;$&#34;</span><span class=p>)</span> <span class=p>|</span> <span class=nx>exe</span> <span class=s2>&#34;normal! g&#39;\&#34;&#34;</span> <span class=p>|</span> <span class=k>endif</span><span class=err>
+</span><span class=err></span><span class=k>endif</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 行列相关配置</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>number</span> <span class=c>&#34; 显示绝对行号</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>relativenumber</span> <span class=c>&#34; 显示相对行号， 会覆盖上面选项</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 设置切换绝对行号和相对行号的快捷键， 这个需要的时候切换提高效率</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 这里默认是相对行号， 需要绝对行号时候可以通过快捷键修改</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>Leader</span><span class=p>&gt;</span><span class=nx>nn</span> :<span class=nx>set</span> <span class=nx>relativenumber</span><span class=p>&lt;</span><span class=nx>CR</span><span class=p>&gt;</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>Leader</span><span class=p>&gt;</span><span class=nx>nu</span> :<span class=nx>set</span> <span class=nx>norelativenumber</span><span class=p>&lt;</span><span class=nx>CR</span><span class=p>&gt;</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>cursorline</span> <span class=c>&#34; 突出显示当前所在行</span><span class=err>
+</span><span class=err></span><span class=c>&#34; set cursorcolumn &#34; 突出显示当前列</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; ==== tab 缩进</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 设置Tab长度为4空格， 只是显示， 真实的还是一个 tab</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>tabstop</span><span class=p>=</span><span class=m>4</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 设置输入的 tab 转换成 4 个空格，这里只允许指定文件启用这个设置</span><span class=err>
+</span><span class=err></span><span class=nx>au</span> <span class=nx>BufRead</span><span class=p>,</span><span class=nx>BufNewFile</span> *.<span class=nx>md</span> <span class=nx>call</span> <span class=nx>SetTabToSpace</span><span class=p>()</span><span class=err>
+</span><span class=err></span><span class=k>function</span> <span class=nx>SetTabToSpace</span><span class=p>()</span><span class=err>
+</span><span class=err></span>    <span class=nx>set</span> <span class=nx>shiftwidth</span><span class=p>=</span><span class=m>4</span>  <span class=c>&#34; 转换 4 个空格</span><span class=err>
+</span><span class=err></span>    <span class=nx>set</span> <span class=nx>expandtab</span>     <span class=c>&#34; 实时生效，配合 shiftwidth</span><span class=err>
+</span><span class=err></span>	<span class=nx>set</span> <span class=nx>softtabstop</span><span class=p>=</span><span class=m>4</span> <span class=c>&#34; 删除时候的行为， 也会同时删除 4 个空格</span><span class=err>
+</span><span class=err></span><span class=k>endfunction</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 继承前一行的缩进方式</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>autoindent</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 开启实时搜索，随着你输入查询字串，显示不同的搜索结果</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>incsearch</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 搜索时大小写不敏感</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>ignorecase</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 退出插入模式指定类型的文件自动保存</span><span class=err>
+</span><span class=err></span><span class=nx>au</span> <span class=nx>InsertLeave</span> *.<span class=nx>go</span><span class=p>,</span>*.<span class=nx>md</span><span class=p>,</span>*.<span class=nx>proto</span> <span class=nx>write</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 保存文件时候自动去除行尾空格</span><span class=err>
+</span><span class=err></span><span class=nx>autocmd</span> <span class=nx>BufWritePre</span> *.<span class=nx>md</span><span class=p>,</span>*.<span class=nx>go</span> :%<span class=nx>s</span><span class=sr>/\s\+$/</span>/<span class=nx>e</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 全选</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>a</span> <span class=nx>ggvG</span>$<span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 系统剪切板复制粘贴， vim 使用系统剪切板需要 vim 支持</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 查询可以通过 vim --version | grep clipboard 查看</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 如果显示 +clipboard 就是支持， 如果是 -clipboard 就是不支持</span><span class=err>
+</span><span class=err></span><span class=c>&#34; ubuntu 可以直接安装 gui 包提供支持： sudo apt install vim-gtk</span><span class=err>
+</span><span class=err></span><span class=c>&#34; normal 模式下复制到系统剪切板， 这里没有 &#34;+yy 这样只能复制一行</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 使用的时候可以 alt + c ， 然后再输入 yy ， 就是一行</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 也可以在文件顶部， alt + c ， 然后再输入 yG ， 就是全部内容</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 粘贴可以 alt + c ，然后输入 p， 就是为了省略不太好按的 &#34;+ 组合</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>c</span><span class=p>&gt;</span> <span class=c>&#34;+</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 复制 v 模式的选中区域</span><span class=err>
+</span><span class=err></span><span class=nx>vmap</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>c</span><span class=p>&gt;</span> <span class=c>&#34;+y</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 插件开始的位置</span><span class=err>
+</span><span class=err></span><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span><span class=nx>call</span> <span class=nx>plug</span>#<span class=nx>begin</span><span class=p>(</span><span class=s1>&#39;~/.vim/plug&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>encoding</span><span class=p>=</span><span class=nx>UTF</span><span class=m>-8</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 主题配色</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;morhetz/gruvbox&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 状态栏插件，包括显示行号，列号，文件类型，文件名，以及Git状态</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;vim-airline/vim-airline&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 状态栏目插件的主题，使用后可以使颜色看起来更加突出一点</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;vim-airline/vim-airline-themes&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 用来提供一个导航目录的侧边栏</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;preservim/nerdtree&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; nerdtree 中显示 git 状态</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;Xuyuanp/nerdtree-git-plugin&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 可以在导航中显示图标， 不过需要有字体支持，否则就是乱码</span><span class=err>
+</span><span class=err></span><span class=c>&#34; https://github.com/ryanoasis/nerd-fonts</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 终端也需要字体配合，如我使用的是 firacode nerd font Regular</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 喜欢其他字体也可以，不过要使用带 nerd font 的字体</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;ryanoasis/vim-devicons&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 可以在文档中显示 git 信息</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;airblade/vim-gitgutter&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; markdown 预览</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;iamcco/markdown-preview.nvim&#39;</span><span class=p>,</span> { <span class=s1>&#39;do&#39;</span>: { <span class=p>-&gt;</span> <span class=nx>mkdp</span>#<span class=nx>util</span>#<span class=nx>install</span><span class=p>()</span> }<span class=p>,</span> <span class=s1>&#39;for&#39;</span>: [<span class=s1>&#39;markdown&#39;</span><span class=p>,</span> <span class=s1>&#39;vim-plug&#39;</span>]}<span class=err>
+</span><span class=err></span><span class=c>&#34; markdown 中 latex 数学公式支持</span><span class=err>
+</span><span class=err></span><span class=c>&#34; Plug &#39;iamcco/mathjax-support-for-mkdp&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 下面两个插件要配合使用，可以自动生成代码块</span><span class=err>
+</span><span class=err></span><span class=c>&#34; B</span><span class=err>
+</span><span class=err></span><span class=c>&#34; Plug &#39;SirVer/ultisnips&#39;   &#34; 插件本身， 使用 coc-snippets 替换了</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;honza/vim-snippets&#39;</span> <span class=c>&#34; 代码片段仓库</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 代码自动完成插件</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;neoclide/coc.nvim&#39;</span><span class=p>,</span> {<span class=s1>&#39;branch&#39;</span>: <span class=s1>&#39;release&#39;</span>}<span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; go-imports</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;mattn/vim-goimports&#39;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; go tag</span><span class=err>
+</span><span class=err></span><span class=nx>Plug</span> <span class=s1>&#39;majutsushi/tagbar&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 插件结束的位置，插件全部放在此行上面</span><span class=err>
+</span><span class=err></span><span class=nx>call</span> <span class=nx>plug</span>#<span class=nx>end</span><span class=p>()</span><span class=err>
+</span><span class=err></span><span class=c>&#34;==============================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== 主题配色设置 ===========================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 开启24bit的颜色，开启这个颜色会更漂亮一些</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>termguicolors</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 主题配色</span><span class=err>
+</span><span class=err></span><span class=nx>colorscheme</span> <span class=nx>gruvbox</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 主题背景 dark-深色; light-浅色</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>background</span><span class=p>=</span><span class=nb>dark</span><span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== nerdtree 插件配置 ======================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 设置一个打开的快捷键， 如我的就是 &#34; + b 打开， 再按一次关闭</span><span class=err>
+</span><span class=err></span><span class=nx>nnoremap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>b</span> :<span class=nx>NERDTreeToggle</span><span class=p>&lt;</span><span class=nx>CR</span><span class=p>&gt;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 导航目录展开的符号</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>NERDTreeDirArrowExpandable</span> <span class=p>=</span> <span class=s1>&#39;▸&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 导航目录关闭的符号</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>NERDTreeDirArrowCollapsible</span> <span class=p>=</span> <span class=s1>&#39;▾&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 默认显示行号</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>NERDTreeShowLineNumbers</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 打开文件时是否显示目录， 1- 显示 0- 不显示</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>NERDTreeAutoCenter</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 是否显示隐藏文件</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>NERDTreeShowHidden</span><span class=p>=</span><span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 设置宽度</span><span class=err>
+</span><span class=err></span><span class=c>&#34; let NERDTreeWinSize=31</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 忽略一下文件的显示， 可以定义只隐藏指定文件或目录</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>NERDTreeIgnore</span><span class=p>=</span>[<span class=s1>&#39;\.pyc&#39;</span><span class=p>,</span><span class=s1>&#39;\~$&#39;</span><span class=p>,</span><span class=s1>&#39;\.swp&#39;</span><span class=p>,</span><span class=s1>&#39;\.git&#39;</span>]<span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== nerdtree-git-plugin 插件 ===============</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 是否显示忽略文件 1- 显示 0- 不显示 默认 0</span><span class=err>
+</span><span class=err></span><span class=c>&#34; let g:NERDTreeGitStatusShowIgnored = 1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== vim-airline 插件配置 ===================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 状态栏目使用主题， 还可以使用 dark， simple， solarized light 等</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 更多主题 https://github.com/vim-airline/vim-airline/wiki/Screenshots</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>airline_theme</span><span class=p>=</span><span class=s1>&#39;light&#39;</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 安装字体后，启用这个选项后在状态栏可以看到图标</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 需要先安装 powerline 字体才可以 sudo apt-get install fonts-powerline</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 如果没有安装 powerline 字体不要启用这个选项，否则会显示乱码</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 如果 vim-devicons 插件配置好了就可以忽略 powerline 字体，这个插件包含</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 了字体图标，并且更加漂亮</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>airline_powerline_fonts</span> <span class=p>=</span> <span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 启动顶部的 tabline ， 可以显示打开的 buffers， 显示多 tab 标签</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>airline</span>#<span class=nx>extensions</span>#<span class=nx>tabline</span>#<span class=nx>enabled</span> <span class=p>=</span> <span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 设置切换 tab 标签（buffer）的快捷键</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>airline</span>#<span class=nx>extensions</span>#<span class=nx>tabline</span>#<span class=nx>buffer_idx_mode</span> <span class=p>=</span> <span class=m>1</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>1</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab1</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>2</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab2</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>3</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab3</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>4</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab4</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>5</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab5</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>6</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab6</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>7</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab7</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>8</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab8</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>9</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab9</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=m>0</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectTab0</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>h</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectPrevTab</span><span class=err>
+</span><span class=err></span> <span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>l</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>AirlineSelectNextTab</span><span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== markdwon 插件配置 ======================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 更多的配置见 https://github.com/iamcco/markdown-preview.nvim</span><span class=err>
+</span><span class=err></span><span class=c>&#34; vim 打开markdown 文档是否自动预览， 0 - 否， 1 - 是， 默认： 0</span><span class=err>
+</span><span class=err></span><span class=c>&#34; let g:mkdp_auto_start = 1</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 关闭 markdown 是否自动关闭预览文件， 0 - 否， 1 - 是， 默认： 1</span><span class=err>
+</span><span class=err></span><span class=c>&#34; let g:mkdp_auto_close = 1</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 在启动 markdown 预览时是否在终端回显 url</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 如显示： Preview page: http://127.0.0.1:8472/page/1</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>mkdp_echo_preview_url</span> <span class=p>=</span> <span class=m>1</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; markdwon 的快捷键</span><span class=err>
+</span><span class=err></span><span class=nx>map</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>F5</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>MarkdownPreview</span><span class=err>
+</span><span class=err></span><span class=nx>map</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>F6</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;</span><span class=nx>StopMarkdownPreview</span><span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; ======================== coc.nvim 插件配置 ======================</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 详细见 https://github.com/neoclide/coc.nvim#example-vim-configuration</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 不清楚作用，推荐配置里面有，详细见 https://github.com/neoclide/coc.nvim/issues/649</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>nobackup</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>nowritebackup</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 更改更新时间， 默认是 4000 ms</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>updatetime</span><span class=p>=</span><span class=m>300</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 为消息留出更多的空间</span><span class=err>
+</span><span class=err></span><span class=nx>set</span> <span class=nx>cmdheight</span><span class=p>=</span><span class=m>2</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>
+</span><span class=c>&#34; 追踪到定义的位置</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=nx>gd</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>definition</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=nx>gy</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>type</span><span class=p>-</span><span class=nx>definition</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=nx>gi</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>implementation</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 查看被谁引用</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=nx>gr</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>references</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 预览窗口显示文档</span><span class=err>
+</span><span class=err></span><span class=nx>nnoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=nx>K</span> :<span class=nx>call</span> <span class=p>&lt;</span><span class=nx>SID</span><span class=p>&gt;</span><span class=nx>show_documentation</span><span class=p>()&lt;</span><span class=nx>CR</span><span class=p>&gt;</span><span class=err>
+</span><span class=err></span><span class=k>function</span><span class=p>!</span> <span class=nx>s</span>:<span class=nx>show_documentation</span><span class=p>()</span><span class=err>
+</span><span class=err></span>  <span class=k>if</span> <span class=p>(</span><span class=nx>index</span><span class=p>(</span>[<span class=s1>&#39;vim&#39;</span><span class=p>,</span><span class=s1>&#39;help&#39;</span>]<span class=p>,</span> &amp;<span class=nx>filetype</span><span class=p>)</span> <span class=p>&gt;=</span> <span class=m>0</span><span class=p>)</span><span class=err>
+</span><span class=err></span>    <span class=nx>execute</span> <span class=s1>&#39;h &#39;</span>.<span class=nx>expand</span><span class=p>(</span><span class=s1>&#39;&lt;cword&gt;&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err></span>  <span class=k>elseif</span> <span class=p>(</span><span class=nx>coc</span>#<span class=nx>rpc</span>#<span class=nx>ready</span><span class=p>())</span><span class=err>
+</span><span class=err></span>    <span class=nx>call</span> <span class=nx>CocActionAsync</span><span class=p>(</span><span class=s1>&#39;doHover&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err></span>  <span class=k>else</span><span class=err>
+</span><span class=err></span>    <span class=nx>execute</span> <span class=s1>&#39;!&#39;</span> . &amp;<span class=nx>keywordprg</span> . <span class=s2>&#34; &#34;</span> . <span class=nx>expand</span><span class=p>(</span><span class=s1>&#39;&lt;cword&gt;&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err></span>  <span class=k>endif</span><span class=err>
+</span><span class=err></span><span class=k>endfunction</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=nx>autocmd</span> <span class=nx>CursorHold</span> * <span class=nx>silent</span> <span class=nx>call</span> <span class=nx>CocActionAsync</span><span class=p>(</span><span class=s1>&#39;highlight&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 重命名的快捷操作</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>rn</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>rename</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 关闭提示后手动唤醒提示</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;&lt;</span><span class=nx>expr</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>c</span><span class=p>-</span><span class=nx>l</span><span class=p>&gt;</span> <span class=nx>coc</span>#<span class=nx>refresh</span><span class=p>()</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 通过回车展开代码片段</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;&lt;</span><span class=nx>expr</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>CR</span><span class=p>&gt;</span> <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>visible</span><span class=p>()</span> ? <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>confirm</span><span class=p>()</span><span class=err>
+</span><span class=err></span>                              \: <span class=s2>&#34;\&lt;C-g&gt;u\&lt;CR&gt;\&lt;c-r&gt;=coc#on_enter()\&lt;CR&gt;&#34;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 可以通过 tab 键来切换提示列表选择</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;&lt;</span><span class=nx>expr</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>TAB</span><span class=p>&gt;</span><span class=err>
+</span><span class=err></span>      \ <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>visible</span><span class=p>()</span> ? <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>next</span><span class=p>(</span><span class=m>1</span><span class=p>)</span>:<span class=err>
+</span><span class=err></span>      \ <span class=nx>CheckBackspace</span><span class=p>()</span> ? <span class=s2>&#34;\&lt;Tab&gt;&#34;</span> :<span class=err>
+</span><span class=err></span>      \ <span class=nx>coc</span>#<span class=nx>refresh</span><span class=p>()</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>expr</span><span class=p>&gt;&lt;</span><span class=nx>S</span><span class=p>-</span><span class=nx>TAB</span><span class=p>&gt;</span> <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>visible</span><span class=p>()</span> ? <span class=nx>coc</span>#<span class=nx>pum</span>#<span class=nx>prev</span><span class=p>(</span><span class=m>1</span><span class=p>)</span> : <span class=s2>&#34;\&lt;C-h&gt;&#34;</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=k>function</span><span class=p>!</span> <span class=nx>CheckBackspace</span><span class=p>()</span> <span class=nx>abort</span><span class=err>
+</span><span class=err></span>  <span class=k>let</span> <span class=nx>col</span> <span class=p>=</span> <span class=nx>col</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span> <span class=p>-</span> <span class=m>1</span><span class=err>
+</span><span class=err></span>  <span class=nx>return</span> <span class=p>!</span><span class=nx>col</span> <span class=p>||</span> <span class=nx>getline</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span>[<span class=nx>col</span> <span class=p>-</span> <span class=m>1</span>]  <span class=p>=~</span># <span class=s1>&#39;\s&#39;</span><span class=err>
+</span><span class=err></span><span class=k>endfunction</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 代码提示列表选择， 将原本的 c-p 和 c-n 添加更习惯的方式</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;&lt;</span><span class=nx>expr</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>k</span><span class=p>&gt;</span> <span class=s2>&#34;\&lt;C-p&gt;&#34;</span><span class=err>
+</span><span class=err></span><span class=nx>inoremap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;&lt;</span><span class=nx>expr</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>j</span><span class=p>&gt;</span> <span class=s2>&#34;\&lt;C-n&gt;&#34;</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 格式化代码， 需要 lsp 支持</span><span class=err>
+</span><span class=err></span><span class=nx>xmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>f</span>  <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>format</span><span class=p>-</span><span class=nx>selected</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>f</span>  <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>format</span><span class=p>-</span><span class=nx>selected</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 修复当前选中的代码</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>leader</span><span class=p>&gt;</span><span class=nx>qf</span>  <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>fix</span><span class=p>-</span><span class=nx>current</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; 显示错误信息</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>k</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>diagnostic</span><span class=p>-</span><span class=nx>prev</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>silent</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>M</span><span class=p>-</span><span class=nx>j</span><span class=p>&gt;</span> <span class=p>&lt;</span><span class=nx>Plug</span><span class=p>&gt;(</span><span class=nx>coc</span><span class=p>-</span><span class=nx>diagnostic</span><span class=p>-</span><span class=nx>next</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; coc-go 保存的时候自动导包</span><span class=err>
+</span><span class=err></span><span class=nx>autocmd</span> <span class=nx>BufWritePre</span> *.<span class=nx>go</span> :<span class=nx>silent</span> <span class=nx>call</span> <span class=nx>CocAction</span><span class=p>(</span><span class=s1>&#39;runCommand&#39;</span><span class=p>,</span> <span class=s1>&#39;editor.action.organizeImport&#39;</span><span class=p>)</span><span class=err>
+</span><span class=err></span><span class=c>&#34; =================================================================</span><span class=err>
+</span><span class=err></span><span class=c>
+</span><span class=c>&#34; tag-bar</span><span class=err>
+</span><span class=err></span><span class=k>let</span> <span class=nx>g</span>:<span class=nx>godef_split</span><span class=p>=</span><span class=m>2</span><span class=err>
+</span><span class=err></span><span class=c>&#34; 使用f8 执行</span><span class=err>
+</span><span class=err></span><span class=nx>nmap</span> <span class=p>&lt;</span><span class=nx>F8</span><span class=p>&gt;</span> :<span class=nx>TagbarToggle</span><span class=p>&lt;</span><span class=nx>CR</span><span class=p>&gt;</span><span class=err>
+</span></code></pre></div><h2 id=补充>补充</h2><p>最近调试发现 有个小问题 就是如果使用mac 会发现退格键无法使用</p><p>具体表现为：无法删除之前写的字符（除非使用d d命令），但是可以删除本次插入模式内写入的字符，具体原理不说了，解决方法.vimrc 加一句话</p><p><code>set backspace=2</code></p></div></div></div></main><footer class=footer><div class=footer-container><div class=footer-line>Powered by <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> | Theme - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i>LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022 - 2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://github.com/zzy2210 target=_blank>y1nhui</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp>皖ICP备19008609号-1</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
