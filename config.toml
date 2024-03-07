@@ -473,9 +473,9 @@ hasCJKLanguage = true
       # Gitalk comment config (https://github.com/gitalk/gitalk)
       # Gitalk 评论系统设置 (https://github.com/gitalk/gitalk)
       [params.page.comment.gitalk]
-        enable = false
-        owner = ""
-        repo = ""
+        enable = true
+        owner = "zzy2210"
+        repo = "https://github.com/zzy2210/zzy2210.github.io"
         clientId = ""
         clientSecret = ""
       # Valine comment config (https://github.com/xCss/Valine)

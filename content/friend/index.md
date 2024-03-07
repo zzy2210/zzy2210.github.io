@@ -7,7 +7,7 @@ menu: "friend"
 <div class="flink" id="article-container">
 <div class="friend-list-div" >
 
-{{< friend name="甘草熊" url="blog.sion.ink" logo="https://avatars.githubusercontent.com/u/74760542?v=4" word="一个喜欢代码，也喜欢汉语言的 Web 前端工程师" >}}
+{{< friend name="Sion" url="blog.sion.ink" logo="https://avatars.githubusercontent.com/u/74760542?v=4" word="一个喜欢代码，也喜欢汉语言的 Web 前端工程师" >}}
 {{< friend name="粽子" url="https://nullptr.zone/" logo="https://avatars.githubusercontent.com/u/89287274?v=4" word="要全栈了的前端字节爷" >}}
 {{< friend name="易曦翰" url="https://daily.yixihan.chat/" logo="https://avatars.githubusercontent.com/u/72201112?v=4" word="欢迎来到易曦翰的摸鱼小屋" >}}
 
