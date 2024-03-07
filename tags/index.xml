@@ -1,1 +1,56 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Tags - Tag - 黑白の世界</title><link>https://zzy2210.github.io/tags/</link><description>Tags - Tag - 黑白の世界</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor><webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Wed, 14 Jun 2023 17:35:08 +0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/" rel="self" type="application/rss+xml"/><item><title>kubernetes</title><link>https://zzy2210.github.io/tags/kubernetes/</link><pubDate>Wed, 14 Jun 2023 17:35:08 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/kubernetes/</guid><description></description></item><item><title>kafka</title><link>https://zzy2210.github.io/tags/kafka/</link><pubDate>Mon, 27 Mar 2023 17:45:08 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/kafka/</guid><description></description></item><item><title>go</title><link>https://zzy2210.github.io/tags/go/</link><pubDate>Fri, 17 Feb 2023 23:31:04 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/go/</guid><description></description></item><item><title>data structure</title><link>https://zzy2210.github.io/tags/data-structure/</link><pubDate>Mon, 14 Nov 2022 20:46:54 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/data-structure/</guid><description></description></item><item><title>development</title><link>https://zzy2210.github.io/tags/development/</link><pubDate>Mon, 15 Aug 2022 16:57:03 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/development/</guid><description></description></item><item><title>vim</title><link>https://zzy2210.github.io/tags/vim/</link><pubDate>Mon, 15 Aug 2022 16:57:03 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/tags/vim/</guid><description></description></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Tags - Tag - 黑白の世界</title>
+        <link>https://zzy2210.github.io/tags/</link>
+        <description>Tags - Tag - 黑白の世界</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
+            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Kubernetes</title>
+    <link>https://zzy2210.github.io/tags/kubernetes/</link>
+    <pubDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/kubernetes/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Kafka</title>
+    <link>https://zzy2210.github.io/tags/kafka/</link>
+    <pubDate>Mon, 27 Mar 2023 17:45:08 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/kafka/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Go</title>
+    <link>https://zzy2210.github.io/tags/go/</link>
+    <pubDate>Fri, 17 Feb 2023 23:31:04 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/go/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Data Structure</title>
+    <link>https://zzy2210.github.io/tags/data-structure/</link>
+    <pubDate>Mon, 14 Nov 2022 20:46:54 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/data-structure/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Development</title>
+    <link>https://zzy2210.github.io/tags/development/</link>
+    <pubDate>Mon, 15 Aug 2022 16:57:03 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/development/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Vim</title>
+    <link>https://zzy2210.github.io/tags/vim/</link>
+    <pubDate>Mon, 15 Aug 2022 16:57:03 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/tags/vim/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>

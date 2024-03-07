@@ -1,1 +1,48 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>data structure - Tag - 黑白の世界</title><link>https://zzy2210.github.io/tags/data-structure/</link><description>data structure - Tag - 黑白の世界</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor><webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Mon, 14 Nov 2022 20:46:54 +0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/data-structure/" rel="self" type="application/rss+xml"/><item><title>数据结构-二叉树与其他树</title><link>https://zzy2210.github.io/post/tree/</link><pubDate>Mon, 14 Nov 2022 20:46:54 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/post/tree/</guid><description>完成对二叉树的遍历讲解与实现</description></item><item><title>数据结构-字典</title><link>https://zzy2210.github.io/post/dict/</link><pubDate>Mon, 07 Nov 2022 22:55:36 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/post/dict/</guid><description>完成对跳表的说明，对散列的定义，实现与应用</description></item><item><title>数据结构-队列</title><link>https://zzy2210.github.io/post/queue/</link><pubDate>Mon, 31 Oct 2022 21:58:57 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/post/queue/</guid><description>完成对队列的定义，实现与应用</description></item><item><title>数据结构-栈</title><link>https://zzy2210.github.io/post/stack/</link><pubDate>Sun, 30 Oct 2022 12:33:35 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/post/stack/</guid><description>数据结构 栈 前言 久违的博客。保持学习，回顾以前曾经学过的数据结构。工作了一年多基本全是数组/哈希表解决一切，基本没想过其他实现，也没想过底层或</description></item><item><title>Go数据结构与力扣—链表</title><link>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</link><pubDate>Tue, 13 Apr 2021 16:17:10 +0800</pubDate><author>y1nhui</author><guid>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</guid><description></description></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Data Structure - Tag - 黑白の世界</title>
+        <link>https://zzy2210.github.io/tags/data-structure/</link>
+        <description>Data Structure - Tag - 黑白の世界</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
+            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Mon, 14 Nov 2022 20:46:54 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/data-structure/" rel="self" type="application/rss+xml" /><item>
+    <title>数据结构-二叉树与其他树</title>
+    <link>https://zzy2210.github.io/post/tree/</link>
+    <pubDate>Mon, 14 Nov 2022 20:46:54 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/tree/</guid>
+    <description><![CDATA[数据结构-二叉树与树 前言 本文主要内容为二叉树，树只是一概而过。 其实在去年的时候有写过一篇二叉树的博客，当时是以leetcode题目为主，不过]]></description>
+</item>
+<item>
+    <title>数据结构-字典</title>
+    <link>https://zzy2210.github.io/post/dict/</link>
+    <pubDate>Mon, 07 Nov 2022 22:55:36 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/dict/</guid>
+    <description><![CDATA[数据结构 字典 前言 这一章的撰写有些纠结。因为我个人是根据 《数据结构、算法与应用 C++ 实现》这本书来进行学习与博客编写的。 这一章的章节名是跳表与散列]]></description>
+</item>
+<item>
+    <title>数据结构-队列</title>
+    <link>https://zzy2210.github.io/post/queue/</link>
+    <pubDate>Mon, 31 Oct 2022 21:58:57 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/queue/</guid>
+    <description><![CDATA[数据结构 队列 定义 队列：遵循先进先出原则的线性表。其插入与删除操作分别在表的两端进行。进行插入操作的是队尾(back/rear)，删除操作的是]]></description>
+</item>
+<item>
+    <title>数据结构-栈</title>
+    <link>https://zzy2210.github.io/post/stack/</link>
+    <pubDate>Sun, 30 Oct 2022 12:33:35 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/stack/</guid>
+    <description><![CDATA[数据结构 栈 前言 久违的博客。保持学习，回顾以前曾经学过的数据结构。工作了一年多基本全是数组/哈希表解决一切，基本没想过其他实现，也没想过底层或]]></description>
+</item>
+<item>
+    <title>Go数据结构与力扣—链表</title>
+    <link>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</link>
+    <pubDate>Tue, 13 Apr 2021 16:17:10 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</guid>
+    <description><![CDATA[前言 ​ 因为想干纯后端，所以开始刷力扣巩固算法与数据结构，结果在写几天前的每日一题的时候发现自己对于链表的操作已经有些遗忘，以及对于链表的实现]]></description>
+</item>
+</channel>
+</rss>
