@@ -48,6 +48,14 @@ hasCJKLanguage = true
     name = "分类"
     url = "/categories/"
     title = ""
+  [[menu.main]]
+    weight = 3
+    identifier = "friends"
+    pre = ""
+    post = ""
+    name = "友链"
+    url = "/friend/"
+    title = ""
 
 # Hugo 解析文档的配置
 [markup]
