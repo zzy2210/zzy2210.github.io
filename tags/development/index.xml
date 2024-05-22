@@ -10,7 +10,7 @@
     <pubDate>Mon, 15 Aug 2022 16:57:03 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/vim-linux/</guid>
-    <description><![CDATA[打造可移植 linux-go 开发环境 前言 因为公司是内外网隔离环境，且内网机器屏幕素质太差，个人打算通过外网堡垒机进入内网linux机器上使用进行开发。 出于避]]></description>
+    <description><![CDATA[基于docker镜像构建vim开发环境]]></description>
 </item>
 </channel>
 </rss>

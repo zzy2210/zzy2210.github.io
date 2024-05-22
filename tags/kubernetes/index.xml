@@ -4,13 +4,21 @@
         <link>https://zzy2210.github.io/tags/kubernetes/</link>
         <description>Kubernetes - Tag - 黑白の世界</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
-            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/kubernetes/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Wed, 22 May 2024 10:03:06 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/kubernetes/" rel="self" type="application/rss+xml" /><item>
+    <title>k8s下的长连接负载均衡</title>
+    <link>https://zzy2210.github.io/post/k8s_balance/</link>
+    <pubDate>Wed, 22 May 2024 10:03:06 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/k8s_balance/</guid>
+    <description><![CDATA[前言 本文开写的原因是在 《k8s in action》一书的十七章提到了，在pod关闭时，避免客户端断开连接。 即当客户端与 pod 之间存在长连接， pod 存在多]]></description>
+</item>
+<item>
     <title>kubernetes-环境搭建</title>
     <link>https://zzy2210.github.io/post/k8s_build/</link>
     <pubDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/k8s_build/</guid>
-    <description><![CDATA[kubernetes 环境搭建 前言 尝试开学学习云原生与k8s，一开始尝试先看看官方文档中对各个名次的解析，但是感觉个人对架构等并不是很清晰，于是干脆直接上手搭建]]></description>
+    <description><![CDATA[完成k8s的单节点环境搭建]]></description>
 </item>
 </channel>
 </rss>

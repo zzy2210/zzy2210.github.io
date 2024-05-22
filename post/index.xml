@@ -4,12 +4,19 @@
     <title>Posts on 黑白の世界</title>
     <link>https://zzy2210.github.io/post/</link>
     <description>Recent content in Posts on 黑白の世界</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>zh-CN</language>
     <managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
     <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster>
-    <lastBuildDate>Thu, 07 Mar 2024 20:33:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 22 May 2024 10:03:06 +0800</lastBuildDate>
     <atom:link href="https://zzy2210.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>k8s下的长连接负载均衡</title>
+      <link>https://zzy2210.github.io/post/k8s_balance/</link>
+      <pubDate>Wed, 22 May 2024 10:03:06 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
+      <guid>https://zzy2210.github.io/post/k8s_balance/</guid>
+      <description>前言 本文开写的原因是在 《k8s in action》一书的十七章提到了，在pod关闭时，避免客户端断开连接。 即当客户端与 pod 之间存在长连接， pod 存在多</description>
+    </item>
     <item>
       <title>这是一个测试文档</title>
       <link>https://zzy2210.github.io/post/test/</link>
@@ -22,7 +29,7 @@
       <link>https://zzy2210.github.io/post/k8s_build/</link>
       <pubDate>Wed, 14 Jun 2023 17:35:08 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/k8s_build/</guid>
-      <description>kubernetes 环境搭建 前言 尝试开学学习云原生与k8s，一开始尝试先看看官方文档中对各个名次的解析，但是感觉个人对架构等并不是很清晰，于是干脆直接上手搭建</description>
+      <description></description>
     </item>
     <item>
       <title>kafak 集群搭建</title>
@@ -36,28 +43,28 @@
       <link>https://zzy2210.github.io/post/go_net/</link>
       <pubDate>Fri, 17 Feb 2023 23:31:04 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/go_net/</guid>
-      <description>前言 最近项目开发和网卡等内容做了一些交道。遇到了一些常见的操作。比如 IP/CIDR 与 ip和netmask的相互转换，IP/CIDR 转换为IP段形式以及转</description>
+      <description></description>
     </item>
     <item>
       <title>数据结构-二叉树与其他树</title>
       <link>https://zzy2210.github.io/post/tree/</link>
       <pubDate>Mon, 14 Nov 2022 20:46:54 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/tree/</guid>
-      <description>数据结构-二叉树与树 前言 本文主要内容为二叉树，树只是一概而过。 其实在去年的时候有写过一篇二叉树的博客，当时是以leetcode题目为主，不过</description>
+      <description></description>
     </item>
     <item>
       <title>数据结构-字典</title>
       <link>https://zzy2210.github.io/post/dict/</link>
       <pubDate>Mon, 07 Nov 2022 22:55:36 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/dict/</guid>
-      <description>数据结构 字典 前言 这一章的撰写有些纠结。因为我个人是根据 《数据结构、算法与应用 C++ 实现》这本书来进行学习与博客编写的。 这一章的章节名是跳表与散列</description>
+      <description></description>
     </item>
     <item>
       <title>数据结构-队列</title>
       <link>https://zzy2210.github.io/post/queue/</link>
       <pubDate>Mon, 31 Oct 2022 21:58:57 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/queue/</guid>
-      <description>数据结构 队列 定义 队列：遵循先进先出原则的线性表。其插入与删除操作分别在表的两端进行。进行插入操作的是队尾(back/rear)，删除操作的是</description>
+      <description></description>
     </item>
     <item>
       <title>数据结构-栈</title>
@@ -71,14 +78,14 @@
       <link>https://zzy2210.github.io/post/vim-linux/</link>
       <pubDate>Mon, 15 Aug 2022 16:57:03 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/vim-linux/</guid>
-      <description>打造可移植 linux-go 开发环境 前言 因为公司是内外网隔离环境，且内网机器屏幕素质太差，个人打算通过外网堡垒机进入内网linux机器上使用进行开发。 出于避</description>
+      <description></description>
     </item>
     <item>
       <title>Go数据结构与力扣—链表</title>
       <link>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</link>
       <pubDate>Tue, 13 Apr 2021 16:17:10 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
       <guid>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</guid>
-      <description>前言 ​ 因为想干纯后端，所以开始刷力扣巩固算法与数据结构，结果在写几天前的每日一题的时候发现自己对于链表的操作已经有些遗忘，以及对于链表的实现</description>
+      <description></description>
     </item>
     <item>
       <title></title>
