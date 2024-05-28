@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>三节点k8s集群的构建 - 黑白の世界</title><meta name="Description" content="一位前安全现Go云开发的博客"><meta property="og:url" content="https://zzy2210.github.io/post/k8s_cluster_build/">
+  <meta property="og:site_name" content="黑白の世界">
+  <meta property="og:title" content="三节点k8s集群的构建">
+  <meta property="og:description" content="三节点k8s集群的构建 前言 咕了要一年的文章哈，一开始老想着在家用自己刷了linux的笔记本&#43;另外两台机器的wsl搭建集群，但是麻烦事太多了。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-03-18T11:07:40+08:00">
+    <meta property="article:modified_time" content="2024-05-28T20:07:40+08:00">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Service Mesh">
+    <meta property="article:tag" content="Cilium">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="三节点k8s集群的构建">
+  <meta name="twitter:description" content="三节点k8s集群的构建 前言 咕了要一年的文章哈，一开始老想着在家用自己刷了linux的笔记本&#43;另外两台机器的wsl搭建集群，但是麻烦事太多了。">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zzy2210.github.io/post/k8s_cluster_build/" /><link rel="prev" href="https://zzy2210.github.io/post/test/" /><link rel="next" href="https://zzy2210.github.io/post/k8s_balance/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "三节点k8s集群的构建",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zzy2210.github.io\/post\/k8s_cluster_build\/"
+        },"genre": "post","keywords": "kubernetes, service mesh, cilium","wordcount":  2777 ,
+        "url": "https:\/\/zzy2210.github.io\/post\/k8s_cluster_build\/","datePublished": "2024-03-18T11:07:40+08:00","dateModified": "2024-05-28T20:07:40+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "y1nhui"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="黑白の世界">黑白の世界</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/post/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/friend/"> 友链 </a><a class="menu-item" href="/about/" title="About"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="黑白の世界">黑白の世界</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/post/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/friend/" title="">友链</a><a class="menu-item" href="/about/" title="About">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">三节点k8s集群的构建</h1><div class="content" id="content"><h1 id="三节点k8s集群的构建">三节点k8s集群的构建</h1>
+<h2 id="前言">前言</h2>
+<p>咕了要一年的文章哈，一开始老想着在家用自己刷了linux的笔记本+另外两台机器的wsl搭建集群，但是麻烦事太多了。
+最终选择了公司的云平台搞三台虚拟机来练手</p>
+<p>相较于 单节点的k8s安装，多节点的最大的不同是需要CNI来进行组网</p>
+<p>这里笔者选用了cilium</p>
+<p>步骤规划:</p>
+<ol>
+<li>部署管理面平台</li>
+<li>载入CNI</li>
+<li>部署work节点</li>
+</ol>
+<p>使用系统: <code>Ubuntu 20.04</code></p>
+<p>如果想要寻找快速搭配的命令，可以直接看 work节点的一图流，然后使用master的 部署k8s-master 与 cilium</p>
+<h2 id="部署管理面平台">部署管理面平台</h2>
+<h3 id="基础环境准备">基础环境准备</h3>
+<p>这里的安装在过去的文章有提及，就不重复了 PS: 在后续走到了 1.24的安装后突然想起来，1.24开始 k8s 不在默认支持docker Engine作为CRI，后文将会有container的安装过程</p>
+<p><a href="https://www.y1nhui.com/post/k8s_build/#%E7%A6%81%E7%94%A8%E4%BA%A4%E6%8D%A2%E5%88%86%E5%8C%BA" target="_blank" rel="noopener noreffer ">单节点k8s环境搭建</a></p>
+<p>ubuntu 的 swap 禁用</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo sed -ri <span class="s1">&#39;/\sswap\s/s/^#?/#/&#39;</span> /etc/fstab
+</span></span><span class="line"><span class="cl">sudo swapoff -a
+</span></span></code></pre></div><p>如果不禁用，在后续的kubeadm 会出现
+<code>kubelet-check] Initial timeout of 40s passed.</code></p>
+<p>这里遇到了一个意料之外的问题</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ProxyChains-3.1 <span class="o">(</span>http://proxychains.sf.net<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>DNS-response<span class="p">|</span>: ubuntu-vm does not exist
+</span></span><span class="line"><span class="cl"><span class="p">|</span>DNS-response<span class="p">|</span>: ubuntu-vm does not exist
+</span></span><span class="line"><span class="cl">sudo: unable to resolve host ubuntu-vm: Unknown error
+</span></span></code></pre></div><p>找了几种方法，比如 安装 reslove tor</p>
+<p>最后发现了一个奇怪的解决方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir /etc/apt/keyrings/
+</span></span><span class="line"><span class="cl">proxychains curl -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+</span></span></code></pre></div><p>或者用另一个解法，不要用sudo 不用sudo就好了= =</p>
+<p>但是有一个新的问题 apt-get updat 的时候</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Err:7 https://packages.cloud.google.com/apt kubernetes-xenial Release
+</span></span><span class="line"><span class="cl">  <span class="m">404</span>  Not Found <span class="o">[</span>IP: 142.250.194.238 443<span class="o">]</span>
+</span></span></code></pre></div><p>直接访问了这个 url 也是404
+所以这里 仓库配置就不使用 google的仓库了，使用阿里云的</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -fsSL https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg <span class="p">|</span> apt-key add -
+</span></span><span class="line"><span class="cl">add-apt-repository <span class="s2">&#34;deb [arch=amd64] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&#34;</span>
+</span></span></code></pre></div><h4 id="google-仓库404问题的补充">google 仓库404问题的补充</h4>
+<p>根据 <a href="https://stackoverflow.com/questions/49582490/running-apt-update-raises-gpg-error-cloud-sdk-is-not-signed" target="_blank" rel="noopener noreffer ">问答</a> 该问题的评论，这是一个已知问题</p>
+<p>解决方案是获取最新的密钥:</p>
+<p>// 但是看上去其实没区别 应该是无效的，等到我work节点的时候试试不用 google 的 可不可行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl  https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo gpg --dearmor -o /usr/share/keyrings/google-keyring.gpg 
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;deb [signed-by=/usr/share/keyrings/google-keyring.gpg] https://packages.cloud.google.com/apt cloud-sdk main&#34;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/kubernetes.list
+</span></span></code></pre></div><p>安装的版本用新一些的</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">apt install -y <span class="nv">kubelet</span><span class="o">=</span>1.24.17-00 <span class="nv">kubeadm</span><span class="o">=</span>1.24.17-00 <span class="nv">kubectl</span><span class="o">=</span>1.24.17-00
+</span></span><span class="line"><span class="cl">apt-mark hold kubelet kubeadm kubectl
+</span></span></code></pre></div><h4 id="containerd-安装">containerd 安装</h4>
+<p>安装 containerd 可以直接使用 apt-get
+<code>apt-get install containerd containerd.io -y</code></p>
+<p><em>按照文档描述，通过apt-get安装的containerd.io 包含了runc，但是并不包含 CNI 插件。</em></p>
+<p>后续这里可能会带来一个坑。 不过目前就是走一步看一步</p>
+<p>这样安装的后 /etc/containerd/config.toml 的配置文件可能不全</p>
+<p>可以考虑手动初始化配置</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo rm -rf /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">sudo containerd config default <span class="p">|</span> sudo tee /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">sudo systemctl restart containerd
+</span></span></code></pre></div><p>安装后可以使用 ctr -v 得到输出，但是这个玩意很不好用，需要再安装客户端工具</p>
+<p>常见的推荐就是 crictl与nerdctl 笔者这里使用 crictl</p>
+<p>直接使用官方文档给的方式</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;v1.28.0&#34;</span>
+</span></span><span class="line"><span class="cl">wget https://github.com/kubernetes-sigs/cri-tools/releases/download/<span class="nv">$VERSION</span>/crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">sudo tar zxvf crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz -C /usr/local/bin
+</span></span><span class="line"><span class="cl">rm -f crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz
+</span></span></code></pre></div><p>安装完后尝试使用 crictl ps 之类的会返回错误，因为默认使用的还是 /var/run/dockershim.sock</p>
+<ul>
+<li>如果执行了手动初始化，这一步可以跳过*</li>
+<li>建议执行，因为可能没有默认的配置文件，导致运行出现无意义报错*</li>
+</ul>
+<pre tabindex="0"><code>validate service connection: validate CRI v1 image API for endpoint &#34;unix:///var/run/dockershim.sock&#34;: rpc error: code = Unavailable desc = connection error: desc = &#34;transport: Error while dialing: dial unix /var/run/dockershim.sock: connect: no such file or directory&#34;
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cat &gt;&gt; /etc/crictl.yaml <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">runtime-endpoint: unix:///run/containerd/containerd.sock
+</span></span></span><span class="line"><span class="cl"><span class="s">image-endpoint: unix:///run/containerd/containerd.sock
+</span></span></span><span class="line"><span class="cl"><span class="s">timeout: 3
+</span></span></span><span class="line"><span class="cl"><span class="s">debug: true
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></div><p>之后会发现还是无法使用，因为需要再调整containerd 的配置
+<code>vim /etc/containerd/config.toml</code></p>
+<p>注释 <code>disabled_plugins = [&quot;cri&quot;]</code></p>
+<p>然后重启 containerd</p>
+<p><code>systemctl restart containerd</code></p>
+<p>就可以了</p>
+<h4 id="配置-cgroup-驱动为-systemd">配置 cgroup 驱动为 systemd</h4>
+<p>在 /etc/containerd/config.toml 中设置</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo sed -i <span class="s1">&#39;s/SystemdCgroup = false/SystemdCgroup = true/g&#39;</span> /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PAUSE_IMAGE</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>kubeadm config images list <span class="p">|</span> grep pause<span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">sudo sed -i <span class="s1">&#39;s,sandbox_image = .*,sandbox_image = &#39;</span><span class="se">\&#34;</span><span class="nv">$PAUSE_IMAGE</span><span class="se">\&#34;</span><span class="s1">&#39;,&#39;</span> /etc/containerd/config.toml
+</span></span></code></pre></div><p>启用cri插件 <code>sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/config.toml</code></p>
+<p>安装 cni插件</p>
+<pre tabindex="0"><code>sudo mkdir -p /opt/cni/bin/
+sudo wget https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
+sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.3.0.tgz
+</code></pre><p>修改hostname
+因为这里的环境使用的是云平台统一创建的虚拟机，所以三台虚拟机的hostname相同，这里做一下修改
+<code>hostnamectl set-hostname y1nhui-k8s-master</code></p>
+<p>参考 cilium 的官方文档。我们在执行完k8s master 节点的部署后再执行  CNI 的相关安装</p>
+<ul>
+<li>很重要，如果不改，哪怕下面的行为已经拖了镜像到本地，apiserver 也会无法启动*</li>
+</ul>
+<p>再补充一个 更改 containerd 的 registry</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/registry.k8s.io/registry.aliyuncs.com\/google_containers/&#39;</span> /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl restart containerd
+</span></span></code></pre></div><h3 id="配置-iptables">配置 iptables</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">overlay
+</span></span></span><span class="line"><span class="cl"><span class="s">br_netfilter
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo modprobe overlay
+</span></span><span class="line"><span class="cl">sudo modprobe br_netfilter
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-iptables  = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.ipv4.ip_forward                 = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo sysctl --system
+</span></span></code></pre></div><h3 id="部署-k8s-master">部署 k8s-master</h3>
+<p>配置 kubeadm的推荐方式时通过 &ndash;config 传递</p>
+<p>自定义镜像仓库</p>
+<p>考虑到网络问题，这里需要使用 如 阿里云之类的 镜像仓库</p>
+<p>导出 kubeadm 默认 init 配置
+<code>kubeadm config print init-defaults &gt; init.conf</code></p>
+<p>做 如下修改</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kubeadm.k8s.io/v1beta3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">bootstrapTokens</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">groups</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">system:bootstrappers:kubeadm:default-node-token</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l">abcdef.0123456789abcdef</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="l">24h0m0s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">usages</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">signing</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">authentication</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">InitConfiguration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">localAPIEndpoint</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">advertiseAddress</span><span class="p">:</span><span class="w"> </span><span class="m">10.10.88.177</span><span class="w"> </span><span class="c"># 对外公开地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">bindPort</span><span class="p">:</span><span class="w"> </span><span class="m">6443</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">nodeRegistration</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">criSocket</span><span class="p">:</span><span class="w"> </span><span class="l">unix:///var/run/containerd/containerd.sock</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">IfNotPresent</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">k8s-master</span><span class="w"> </span><span class="c"># 节点名称 不配置的话则为节点主机名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">taints</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="c"># 污点配置，未null则默认为管理面标记控制面污点</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiServer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">timeoutForControlPlane</span><span class="p">:</span><span class="w"> </span><span class="l">4m0s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kubeadm.k8s.io/v1beta3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">certificatesDir</span><span class="p">:</span><span class="w"> </span><span class="l">/etc/kubernetes/pki</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">clusterName</span><span class="p">:</span><span class="w"> </span><span class="l">kubernetes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">controllerManager</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">dns</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">etcd</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">local</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">dataDir</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/etcd</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">imageRepository</span><span class="p">:</span><span class="w">  </span><span class="l">registry.cn-hangzhou.aliyuncs.com/google_containers</span><span class="w"> </span><span class="c">#registry.k8s.io 替换为国内镜像源</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterConfiguration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kubernetesVersion</span><span class="p">:</span><span class="w"> </span><span class="m">1.24.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networking</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">dnsDomain</span><span class="p">:</span><span class="w"> </span><span class="l">cluster.local</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceSubnet</span><span class="p">:</span><span class="w"> </span><span class="m">10.96.0.0</span><span class="l">/12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSubnet</span><span class="p">:</span><span class="w"> </span><span class="m">10.244.0.0</span><span class="l">/16</span><span class="w"> </span><span class="c">#  pod 使用的 CIDR</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">scheduler</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">KubeletConfiguration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kubelet.config.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">cgroupDriver</span><span class="p">:</span><span class="w"> </span><span class="l">systemd</span><span class="w">
+</span></span></span></code></pre></div><p>先 pull 镜像看看是否有问题</p>
+<p><code> kubeadm config images pull --config init.yaml</code></p>
+<p>之后执行
+<code>kubeadm init --config=init.yaml  --upload-certs --skip-phases=addon/kube-proxy --v=5 </code></p>
+<ul>
+<li>skip-phases=addon/kube-proxy 为 <a href="https://docs.cilium.io/en/stable/installation/k8s-install-kubeadm/#create-the-cluster" target="_blank" rel="noopener noreffer ">cilium 官方要求</a>，若使用CNI不是cilium请参考对应文档</li>
+<li>upload-certs 官网描述为 上传管理面证书到kubeadm-certs Secret 意义不明，但是查找资料有文档推荐使用</li>
+</ul>
+<p>执行之后便可以见到成功输出</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Your Kubernetes control-plane has initialized successfully!
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To start using your cluster, you need to run the following as a regular user:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  mkdir -p $HOME/.kube
+</span></span><span class="line"><span class="cl">  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+</span></span><span class="line"><span class="cl">  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Alternatively, if you are the root user, you can run:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  export KUBECONFIG=/etc/kubernetes/admin.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You should now deploy a pod network to the cluster.
+</span></span><span class="line"><span class="cl">Run &#34;kubectl apply -f [podnetwork].yaml&#34; with one of the options listed at:
+</span></span><span class="line"><span class="cl">  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Then you can join any number of worker nodes by running the following on each as root:
+</span></span></code></pre></div><p>并且执行提示的指令</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir -p <span class="nv">$HOME</span>/.kube
+</span></span><span class="line"><span class="cl">sudo cp -i /etc/kubernetes/admin.conf <span class="nv">$HOME</span>/.kube/config
+</span></span><span class="line"><span class="cl">sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
+</span></span></code></pre></div><h3 id="cilium-部署">cilium 部署</h3>
+<h4 id="安装-helm">安装 helm</h4>
+<p>查看官方文档与各种其他资料，似乎并不能绕开helm。所以需要先安装一个helm</p>
+<p><code>proxychains wget https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz</code></p>
+<p><code>tar -zxvf helm-v3.12.3-linux-amd64.tar.gz &amp;&amp;  mv linux-amd64/helm /usr/local/bin/helm</code></p>
+<h4 id="安装-cilium">安装 cilium</h4>
+<p>添加repo</p>
+<p><code>helm repo add cilium https://helm.cilium.io/</code></p>
+<p>安装 cilium 注意这里需要设置 ip port， 直接使用安装会导致cilium无法启动</p>
+<pre tabindex="0"><code>API_SERVER_IP=&lt;your_api_server_ip&gt;
+# Kubeadm default is 6443
+API_SERVER_PORT=&lt;your_api_server_port&gt;
+proxychains helm install cilium cilium/cilium --version 1.15.5 \
+    --namespace kube-system \
+    --set kubeProxyReplacement=true \
+    --set k8sServiceHost=${API_SERVER_IP} \
+    --set k8sServicePort=${API_SERVER_PORT}
+</code></pre><p>安装 cilium cli 验证安装</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">wget https://github.com/cilium/cilium-cli/releases/download/v0.16.7/cilium-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">tar xzvfC cilium-linux-amd64.tar.gz  /usr/local/bin
+</span></span><span class="line"><span class="cl">rm cilium-linux-amd64.tar.gz
+</span></span></code></pre></div><p>使用 cilium status &ndash;wait 查看</p>
+<p>发现
+<code>Deployment             cilium-operator    Desired: 2, Ready: 1/2, Available: 1/2, Unavailable: 1/2</code></p>
+<p>但是 通过 kubectl get node 可见 node 已经处于ready（因为kubeadm安装跳过了 kube-proxy，所以如果没有安装cilium等 cni，node 将会处于no ready）</p>
+<h2 id="部署-work">部署 work</h2>
+<p>总结出可以直接使用的命令流程，可能又部分需要加proxychains 但是直接走到底可以做到一切正常</p>
+<h3 id="work-准备工作执行指令一图流">work 准备工作执行指令一图流</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo sed -ri <span class="s1">&#39;/\sswap\s/s/^#?/#/&#39;</span> /etc/fstab
+</span></span><span class="line"><span class="cl">sudo swapoff -a
+</span></span><span class="line"><span class="cl">sudo apt-get update
+</span></span><span class="line"><span class="cl">sudo install -m <span class="m">0755</span> -d /etc/apt/keyrings
+</span></span><span class="line"><span class="cl">sudo apt-get install -y apt-transport-https ca-certificates curl
+</span></span><span class="line"><span class="cl">proxychains curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&#34;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/kubernetes.list
+</span></span><span class="line"><span class="cl">curl -fsSL https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg <span class="p">|</span> apt-key add -
+</span></span><span class="line"><span class="cl">add-apt-repository <span class="s2">&#34;deb [arch=amd64] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&#34;</span>
+</span></span><span class="line"><span class="cl">curl  https://packages.cloud.google.com/apt/doc/apt-key.gpg <span class="p">|</span> sudo gpg --dearmor -o /usr/share/keyrings/google-keyring.gpg 
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;deb [signed-by=/usr/share/keyrings/google-keyring.gpg] https://packages.cloud.google.com/apt cloud-sdk main&#34;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/kubernetes.list
+</span></span><span class="line"><span class="cl">apt install -y <span class="nv">kubelet</span><span class="o">=</span>1.24.17-00 <span class="nv">kubeadm</span><span class="o">=</span>1.24.17-00 <span class="nv">kubectl</span><span class="o">=</span>1.24.17-00
+</span></span><span class="line"><span class="cl">apt-mark hold kubelet kubeadm kubectl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">proxychains curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</span></span><span class="line"><span class="cl">sudo chmod a+r /etc/apt/keyrings/docker.gpg
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="s2">&#34;deb [arch=&#34;</span><span class="k">$(</span>dpkg --print-architecture<span class="k">)</span><span class="s2">&#34; signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+</span></span></span><span class="line"><span class="cl"><span class="s2">  &#34;</span><span class="k">$(</span>. /etc/os-release <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$VERSION_CODENAME</span><span class="s2">&#34;</span><span class="k">)</span><span class="s2">&#34; stable&#34;</span> <span class="p">|</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo rm -rf /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">sudo containerd config default <span class="p">|</span> sudo tee /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">sudo systemctl stop docker
+</span></span><span class="line"><span class="cl">sudo systemctl restart containerd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;v1.28.0&#34;</span>
+</span></span><span class="line"><span class="cl">wget https://github.com/kubernetes-sigs/cri-tools/releases/download/<span class="nv">$VERSION</span>/crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">sudo tar zxvf crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz -C /usr/local/bin
+</span></span><span class="line"><span class="cl">rm -f crictl-<span class="nv">$VERSION</span>-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo sed -i <span class="s1">&#39;s/SystemdCgroup = false/SystemdCgroup = true/g&#39;</span> /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PAUSE_IMAGE</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>kubeadm config images list <span class="p">|</span> grep pause<span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">sudo sed -i <span class="s1">&#39;s,sandbox_image = .*,sandbox_image = &#39;</span><span class="se">\&#34;</span><span class="nv">$PAUSE_IMAGE</span><span class="se">\&#34;</span><span class="s1">&#39;,&#39;</span> /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo mkdir -p /opt/cni/bin/
+</span></span><span class="line"><span class="cl">sudo wget https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
+</span></span><span class="line"><span class="cl">sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.3.0.tgz
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">hostnamectl set-hostname y1nhui-k8s-work1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/registry.k8s.io/registry.aliyuncs.com\/google_containers/&#39;</span> /etc/containerd/config.toml
+</span></span><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl restart containerd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">overlay
+</span></span></span><span class="line"><span class="cl"><span class="s">br_netfilter
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo modprobe overlay
+</span></span><span class="line"><span class="cl">sudo modprobe br_netfilter
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-iptables  = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">net.ipv4.ip_forward                 = 1
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo sysctl --system
+</span></span></code></pre></div><p>因为 containerd.io 通过 docker 分发，所以通过apt 安装 containerd 需要 docker 的仓库</p>
+<p>同时需要安装docker-ce等，否则会遇到</p>
+<pre tabindex="0"><code>The following packages have unmet dependencies:
+ containerd.io : Conflicts: containerd
+E: Unable to correct problems, you have held broken packages.
+</code></pre><h4 id="加入集群">加入集群</h4>
+<p>首先在 master节点创建token</p>
+<pre tabindex="0"><code>kubeadm token create
+</code></pre><p>返回的内容类似</p>
+<p><code>5didvk.d09sbcov8ph2amjw</code></p>
+<p>使用命令获取 ca-cert-hase
+<code>openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2&gt;/dev/null | \ openssl dgst -sha256 -hex | sed 's/^.* //'</code></p>
+<p>返回类似</p>
+<p><code>8cb2de97839780a412b93877f8507ad6c94f73add17d5d7058e91741c9d5ec78</code></p>
+<p>使用kubeadm join 命令加入</p>
+<p><code>kubeadm join &lt;control-plane-host&gt;:&lt;control-plane-port&gt; --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;n</code></p>
+<p>比如笔者的这里使用</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubeadm join 10.10.88.177:6443 --token y76ltj.xyqwukvkuax0xa9b --discovery-token-ca-cert-hash sha256:4e872afb456e0f05ba34ec0c381895b189b6f5cbd27ffcc1c6afdab0931ca026 --node-name k8s-work1
+</span></span></code></pre></div><p>或许读者会发现有的资料提及到了 使用带配置文件的 join，但是考虑到<a href="https://kubernetes.io/zh-cn/docs/reference/setup-tools/kubeadm/kubeadm-join/#config-file" target="_blank" rel="noopener noreffer ">官方文档</a>表示该功能为beta功能，未来可能变动，所以不使用</p>
+<p>执行之后，在master使用 <code>kubectl get node</code> 可以见到返回如下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME         STATUS     ROLES           AGE   VERSION
+</span></span><span class="line"><span class="cl">k8s-master   Ready      control-plane   52d   v1.24.17
+</span></span><span class="line"><span class="cl">k8s-work1    NotReady   &lt;none&gt;          10s   v1.24.17
+</span></span></code></pre></div><p>等待cilium 加载后，work1 变回ready</p>
+<h2 id="可选">可选</h2>
+<h3 id="配置-containerd-代理">配置 containerd 代理</h3>
+<p>创建 containerd service 文档</p>
+<p><code>mkdir /etc/systemd/system/containerd.service.d/</code></p>
+<p>写入代理</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cat &gt; /etc/systemd/system/containerd.service.d/http-proxy.conf <span class="s">&lt;&lt;-EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s">Environment=&#34;HTTP_PROXY=&lt;your_proxy&gt;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">Environment=&#34;HTTPS_PROXY=&lt;your_proxy&gt;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">Environment=&#34;NO_PROXY=localhost,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.ewhisper.cn,&lt;nodeCIDR&gt;,&lt;APIServerInternalURL&gt;,&lt;serviceNetworkCIDRs&gt;,&lt;etcdDiscoveryDomain&gt;,&lt;clusterNetworkCIDRs&gt;,&lt;platformSpecific&gt;,&lt;REST_OF_CUSTOM_EXCEPTIONS&gt;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></div><p>重启</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl restart containerd
+</span></span></code></pre></div><h3 id="安装-hubble">安装 hubble</h3>
+<ul>
+<li>暂未成功
+获取 hubble yaml</li>
+</ul>
+<p><code>proxychains wget https://raw.githubusercontent.com/cilium/hubble/v0.5/tutorials/deploy-hubble-servicemap/hubble-all-minikube.yaml</code></p>
+<p>创建pod等</p>
+<p><code>kubectl apply -f hubble-all-minikube.yaml</code></p>
+<p>创建一个 nodeport</p>
+<p><code>kubectl -n kube-system get svc hubble-ui -o yaml &gt; ui.yaml</code></p>
+<h2 id="总结">总结</h2>
+<p>本文总结了无kube-proxy安装 使用 cilium的 k8s集群</p>
+<p>文章写作一拖再拖，终于实在看了玩k8s in action 打算开始学 service mesh 没有环境忍无可忍的情况下写完</p>
+</div><div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.126.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/zzy2210" target="_blank">y1nhui</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp">皖ICP备19008609号-1</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOIVCTEM4CdyQM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"zzy2210/zzy2210.github.io","repoId":"R_kgDOIVCTEA"}},"lightgallery":true};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Service Mesh - Tag - 黑白の世界</title>
+        <link>https://zzy2210.github.io/tags/service-mesh/</link>
+        <description>Service Mesh - Tag - 黑白の世界</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
+            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Mon, 18 Mar 2024 11:07:40 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/service-mesh/" rel="self" type="application/rss+xml" /><item>
+    <title>三节点k8s集群的构建</title>
+    <link>https://zzy2210.github.io/post/k8s_cluster_build/</link>
+    <pubDate>Mon, 18 Mar 2024 11:07:40 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/k8s_cluster_build/</guid>
+    <description><![CDATA[三节点k8s集群的构建 前言 咕了要一年的文章哈，一开始老想着在家用自己刷了linux的笔记本+另外两台机器的wsl搭建集群，但是麻烦事太多了。]]></description>
+</item>
+</channel>
+</rss>

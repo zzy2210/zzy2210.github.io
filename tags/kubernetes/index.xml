@@ -13,6 +13,14 @@
     <description><![CDATA[前言 本文开写的原因是在 《k8s in action》一书的十七章提到了，在pod关闭时，避免客户端断开连接。 即当客户端与 pod 之间存在长连接， pod 存在多]]></description>
 </item>
 <item>
+    <title>三节点k8s集群的构建</title>
+    <link>https://zzy2210.github.io/post/k8s_cluster_build/</link>
+    <pubDate>Mon, 18 Mar 2024 11:07:40 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/k8s_cluster_build/</guid>
+    <description><![CDATA[三节点k8s集群的构建 前言 咕了要一年的文章哈，一开始老想着在家用自己刷了linux的笔记本+另外两台机器的wsl搭建集群，但是麻烦事太多了。]]></description>
+</item>
+<item>
     <title>kubernetes-环境搭建</title>
     <link>https://zzy2210.github.io/post/k8s_build/</link>
     <pubDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</pubDate>
