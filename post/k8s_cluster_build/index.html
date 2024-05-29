@@ -34,7 +34,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/zzy2210.github.io\/post\/k8s_cluster_build\/"
-        },"genre": "post","keywords": "kubernetes, service mesh, cilium","wordcount":  2777 ,
+        },"genre": "post","keywords": "kubernetes, service mesh, cilium","wordcount":  2819 ,
         "url": "https:\/\/zzy2210.github.io\/post\/k8s_cluster_build\/","datePublished": "2024-03-18T11:07:40+08:00","dateModified": "2024-05-28T20:07:40+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -400,15 +400,14 @@ E: Unable to correct problems, you have held broken packages.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl daemon-reload
 </span></span><span class="line"><span class="cl">systemctl restart containerd
 </span></span></code></pre></div><h3 id="安装-hubble">安装 hubble</h3>
-<ul>
-<li>暂未成功
-获取 hubble yaml</li>
-</ul>
+<p>获取 hubble yaml</p>
 <p><code>proxychains wget https://raw.githubusercontent.com/cilium/hubble/v0.5/tutorials/deploy-hubble-servicemap/hubble-all-minikube.yaml</code></p>
 <p>创建pod等</p>
 <p><code>kubectl apply -f hubble-all-minikube.yaml</code></p>
 <p>创建一个 nodeport</p>
 <p><code>kubectl -n kube-system get svc hubble-ui -o yaml &gt; ui.yaml</code></p>
+<p>修改 type 为 NodePort，sepc 只保留 ports selector sessionAffinity 与 type</p>
+<p>启用后，即可通过nodeport 访问 hubble 网页</p>
 <h2 id="总结">总结</h2>
 <p>本文总结了无kube-proxy安装 使用 cilium的 k8s集群</p>
 <p>文章写作一拖再拖，终于实在看了玩k8s in action 打算开始学 service mesh 没有环境忍无可忍的情况下写完</p>
