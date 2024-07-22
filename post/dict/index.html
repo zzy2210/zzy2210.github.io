@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
     <meta property="article:published_time" content="2022-11-07T22:55:36+08:00">
-    <meta property="article:modified_time" content="2022-11-07T22:55:36+08:00">
+    <meta property="article:modified_time" content="2024-07-22T08:02:21+00:00">
     <meta property="article:tag" content="Data Structure">
 
   <meta name="twitter:card" content="summary">
@@ -32,8 +32,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/zzy2210.github.io\/post\/dict\/"
-        },"genre": "post","keywords": "data structure","wordcount":  3047 ,
-        "url": "https:\/\/zzy2210.github.io\/post\/dict\/","datePublished": "2022-11-07T22:55:36+08:00","dateModified": "2022-11-07T22:55:36+08:00","publisher": {
+        },"genre": "post","keywords": "data structure","wordcount":  3045 ,
+        "url": "https:\/\/zzy2210.github.io\/post\/dict\/","datePublished": "2022-11-07T22:55:36+08:00","dateModified": "2024-07-22T08:02:21+00:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -88,8 +88,8 @@
 <p>我们按照这种定义来做个情景应用</p>
 <p>假设现在有100个学生，但是他们的学生编号是<code>20220001-20229000</code>
 <code>f=k-20220000</code>
-那么这种情况下，关键字的范围有是<code>20220001</code>~<code>20229000</code>
-f(k)的范围也是<code>1</code>~<code>9000</code></p>
+那么这种情况下，关键字的范围有是<code>20220001</code><del><code>20229000</code>
+f(k)的范围也是<code>1</code></del><code>9000</code></p>
 <p>那我们就需要创建一个长为9000的的散列表来容纳，而且实际使用可能只有100。这是十分不明智地，而且初始化一个如此长的散列表，所需要的时间也是很高的</p>
 <p>所以当关键字范围很大时，就不采用理想方式</p>
 <p>非理想情况下的hash表，它的位置数量（可以理解为链表中的节点数量，数组中的长度）小于关键字的范围，hash函数会将若干个不同的关键字映射到同一个位置，即可能发生<code>f(k1)</code>=<code>f(k2)</code>=<code>f(k3)</code>=&hellip;=<code>f（kn）</code></p>
@@ -326,7 +326,7 @@ f(k)的范围也是<code>1</code>~<code>9000</code></p>
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.126.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.129.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/zzy2210" target="_blank">y1nhui</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
                     <span class="icp">皖ICP备19008609号-1</span></div>
         </div>

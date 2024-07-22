@@ -8,8 +8,15 @@
     <language>zh-CN</language>
     <managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
     <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster>
-    <lastBuildDate>Tue, 28 May 2024 20:07:40 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jul 2024 08:02:21 +0000</lastBuildDate>
     <atom:link href="https://zzy2210.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一次结构体复用导致的bug</title>
+      <link>https://zzy2210.github.io/post/bugs_caused_by_structure_reuse/</link>
+      <pubDate>Mon, 22 Jul 2024 11:29:47 +0800</pubDate><author>y1nhui@foxmail.com (y1nhui)</author>
+      <guid>https://zzy2210.github.io/post/bugs_caused_by_structure_reuse/</guid>
+      <description>结构体复用BUG 前文 先看一行代码 ws.Route(ws.Get(&amp;quot;xxx&amp;quot;)).To(handler.xx).Filter(handler.BodyFilter(&amp;amp;param.Crate{})) 咋一看似乎没用问题，为该路由增加校验规则，校验的类型是 param.Crate{}。 至于 BodyFilter 函数内部是什么样的</description>
+    </item>
     <item>
       <title>k8s下的长连接负载均衡</title>
       <link>https://zzy2210.github.io/post/k8s_balance/</link>
