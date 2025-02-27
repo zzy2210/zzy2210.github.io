@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>vnc连接高版本tls的定位于解决方法 - 黑白の世界</title><meta name="Description" content="基于guacd连接高版本tls机器上的vnc服务器失败后的试错与解决方案"><meta property="og:title" content="vnc连接高版本tls的定位于解决方法" />
+<meta property="og:description" content="基于guacd连接高版本tls机器上的vnc服务器失败后的试错与解决方案" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zzy2210.github.io/post/ssl_handshake_failed/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2025-02-27T21:25:49+08:00" />
+<meta property="article:modified_time" content="2025-02-27T13:47:22+00:00" /><meta property="og:site_name" content="黑白の世界" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="vnc连接高版本tls的定位于解决方法"/>
+<meta name="twitter:description" content="基于guacd连接高版本tls机器上的vnc服务器失败后的试错与解决方案"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zzy2210.github.io/post/ssl_handshake_failed/" /><link rel="prev" href="https://zzy2210.github.io/post/bugs_caused_by_structure_reuse/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vnc连接高版本tls的定位于解决方法",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zzy2210.github.io\/post\/ssl_handshake_failed\/"
+        },"genre": "post","wordcount":  2271 ,
+        "url": "https:\/\/zzy2210.github.io\/post\/ssl_handshake_failed\/","datePublished": "2025-02-27T21:25:49+08:00","dateModified": "2025-02-27T13:47:22+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "y1nhui"
+            },"description": "基于guacd连接高版本tls机器上的vnc服务器失败后的试错与解决方案"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="黑白の世界">黑白の世界</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/post/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/friend/"> 友链 </a><a class="menu-item" href="/about/" title="About"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="黑白の世界">黑白の世界</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/post/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/friend/" title="">友链</a><a class="menu-item" href="/about/" title="About">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">vnc连接高版本tls的定位于解决方法</h1><div class="content" id="content"><h1 id="一次tls握手失败导致的vnc不可用">一次tls握手失败导致的vnc不可用</h1>
+<h2 id="前言">前言</h2>
+<p>使用 guacd 连接高版本 vnc 服务遇见了失败</p>
+<p>检验 vnc 服务器输出
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images%5cssl_handshake%5cimg_v3_02ii_0df075cc-c1d0-4545-9c8a-18f5b61a207g.jpg"
+        data-srcset="images%5cssl_handshake%5cimg_v3_02ii_0df075cc-c1d0-4545-9c8a-18f5b61a207g.jpg, images%5cssl_handshake%5cimg_v3_02ii_0df075cc-c1d0-4545-9c8a-18f5b61a207g.jpg 1.5x, images%5cssl_handshake%5cimg_v3_02ii_0df075cc-c1d0-4545-9c8a-18f5b61a207g.jpg 2x"
+        data-sizes="auto"
+        alt="images\ssl_handshake\img_v3_02ii_0df075cc-c1d0-4545-9c8a-18f5b61a207g.jpg"
+        title="alt text" /></p>
+<p>可见tls握手失败。</p>
+<p>这里我们优先质疑是 centos 的问题，因为它的本机openssl 版本为：1.0.2k
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images%5cssl_handshake%5cimage.png"
+        data-srcset="images%5cssl_handshake%5cimage.png, images%5cssl_handshake%5cimage.png 1.5x, images%5cssl_handshake%5cimage.png 2x"
+        data-sizes="auto"
+        alt="images\ssl_handshake\image.png"
+        title="alt text" /></p>
+<p>查看支持的加密套件库，甚至看不到tls1.3 ,而且还有 ssl3.0</p>
+<h2 id="实验中定位实验中解决">实验中定位，实验中解决</h2>
+<p>笔者计划:</p>
+<ul>
+<li>升级 centos openssl 库 查看是否可以</li>
+<li>若不行，升级 guacd 编译机器重新编译guacd 验证是否可行</li>
+</ul>
+<p>笔者先给出最终的方法，具体的解决过程将在后续逐渐给出：</p>
+<ul>
+<li>运行机器 openssl 肯定需要升级</li>
+<li>Guacd 也需要在升级了openssl 的情况下编译</li>
+<li>Guacd 的 vnc 服务依赖 libvncserver 实现，因而 libvnvserver 也需要在编译机器重新编译</li>
+</ul>
+<p>同时需要考虑到安装包的问题，所以这里的  openssl 与 libvncserver 的升级方案，都需要做rpm包</p>
+<p>所以我们最终需要的是</p>
+<ul>
+<li>Openssl 新版本 rpm</li>
+<li>指向了 新 openssl 的 libvncserver 的rpm</li>
+<li>指向了 新libvncserver 的guacd</li>
+</ul>
+<h3 id="openssl-rpm-构建">Openssl rpm 构建</h3>
+<p>笔者先是参考了一篇文章与一个github仓库：</p>
+<p><a href="https://igray.cc/937.html" target="_blank" rel="noopener noreffer ">CentOS7制作rpm包升级OpenSSL</a></p>
+<p><a href="https://github.com/philyuchkoff/openssl-RPM-Builder" target="_blank" rel="noopener noreffer ">Build latest OpenSSL binary for CentOS</a></p>
+<p>构建过程为:</p>
+<h4 id="安装依赖">安装依赖</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yum install rpm-build rpmlint rpmdevtools -y
+</span></span><span class="line"><span class="cl">yum install gcc gcc-c++ make perl perl-WWW-Curl -y
+</span></span></code></pre></div><h4 id="构建文件夹">构建文件夹</h4>
+<p><code>mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}</code></p>
+<h4 id="移动包到目标下">移动包到目标下</h4>
+<p><code>cp openssl-1.1.1w.tar.gz  ~/rpmbuild/SOURCES/</code></p>
+<h4 id="创建-spec">创建 spec</h4>
+<p>vi ~/rpmbuild/SPECS/openssl.spec
+填写内容：</p>
+<pre tabindex="0"><code class="language-spec" data-lang="spec">Summary: OpenSSL 1.1.1w for redhat
+Name: openssl
+Version: %{?version}%{!?version:1.1.1w}
+Release: 1%{?dist}
+Obsoletes: %{name} &lt;= %{version}
+Provides: %{name} = %{version}
+URL: https://www.openssl.org/
+License: GPLv2+
+
+Source: https://www.openssl.org/source/%{name}-%{version}.tar.gz 
+ 
+BuildRequires: make gcc perl perl-WWW-Curl
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+%global openssldir /usr/local/openssl1.1.1w
+ 
+%description
+OpenSSL RPM for version 1.1.1w on redhat
+ 
+%package devel
+Summary: Development files for programs which will use the openssl library
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+ 
+%description devel
+OpenSSL RPM for version 1.1.1w on redhat (development package)
+ 
+%prep
+%setup -q
+ 
+%build
+./config --prefix=%{openssldir} --openssldir=%{openssldir}
+make -j4
+ 
+%install
+[ &#34;%{buildroot}&#34; != &#34;/&#34; ] &amp;&amp; %{__rm} -rf %{buildroot}
+%make_install
+ 
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_libdir}
+ln -sf %{openssldir}/lib/libssl.so.1.1 %{buildroot}%{_libdir}
+ln -sf %{openssldir}/lib/libcrypto.so.1.1 %{buildroot}%{_libdir}
+ln -sf %{openssldir}/bin/openssl %{buildroot}%{_bindir}
+ 
+%clean
+[ &#34;%{buildroot}&#34; != &#34;/&#34; ] &amp;&amp; %{__rm} -rf %{buildroot}
+ 
+%files
+%{openssldir}
+%defattr(-,root,root)
+/usr/bin/openssl
+/usr/lib64/libcrypto.so.1.1
+/usr/lib64/libssl.so.1.1
+ 
+%files devel
+%{openssldir}/include/*
+%defattr(-,root,root)
+ 
+%post -p /sbin/ldconfig
+ 
+%postun -p /sbin/ldconfig
+</code></pre><h4 id="执行构建">执行构建</h4>
+<p><code>rpmbuild -D &quot;version 1.1.1w&quot; -ba openssl.spec</code></p>
+<p>这里可以看到，选择了将openssl 安装到了自定义文件夹下，而不是默认文件夹，这是因为直接替换的情况下，centos有很多依赖 1.0.2 libs 与 devel 的组件，会导致系统崩溃。</p>
+<p>那么第一步，openssl 的 rpm 包就好了</p>
+<p>这里做验证：</p>
+<p>rpm -ivh &ndash;force &ndash;nodeps  xxx.rpm
+安装完成后查看,可见已经在运行 openssl 1.1.1w
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-2.png"
+        data-srcset="images/ssl_handshake/image-2.png, images/ssl_handshake/image-2.png 1.5x, images/ssl_handshake/image-2.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-2.png"
+        title="alt text" />
+并且执行 openssl ciphers -v  也可以看到已经支持了tls1.3
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-3.png"
+        data-srcset="images/ssl_handshake/image-3.png, images/ssl_handshake/image-3.png 1.5x, images/ssl_handshake/image-3.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-3.png"
+        title="alt text" />
+但是这里运行，guacd 还是连接失败，从日志可以定位到仍然在使用 openssl 1.0.2 k，所以需要重新编译guacd</p>
+<h3 id="编译guacd">编译guacd</h3>
+<p>编译guacd 基本与原本的没有区别，只是对 configure 做了增加 改为了
+./configure &ndash;prefix=/custom/server <br>
+&ndash;with-init-dir=/custom/server <br>
+&ndash;disable-kubernetes &ndash;enable-shared <br>
+CPPFLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
+LDFLAGS=&quot;-L/usr/local/openssl1.1.1w/lib&quot; <br>
+&ndash;with-openssl=/usr/local/openssl1.1.1w
+但是这个版本还是不可用。
+当时还没有考虑好c的编译依赖等情况，只是单程的在想，是不是 libvncserver 需要重新编译？
+于是我也编译了libvncserver</p>
+<h3 id="libvncserver">Libvncserver</h3>
+<p>使用如下 cmake 进行配置，之后make&amp;&amp; make install
+cmake -DCMAKE_C_FLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
+-DCMAKE_CXX_FLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
+-DCMAKE_EXE_LINKER_FLAGS=&quot;-L/usr/local/openssl1.1.1w/lib&quot; <br>
+-DCMAKE_SHARED_LINKER_FLAGS=&quot;-L/usr/local/openssl1.1.1w/lib&quot; <br>
+-DOPENSSL_ROOT_DIR=/usr/local/openssl1.1.1w <br>
+-DOPENSSL_LIBRARIES=/usr/local/openssl1.1.1w/lib <br>
+-DOPENSSL_INCLUDE_DIR=/usr/local/openssl1.1.1w/include <br>
+-DCMAKE_INSTALL_PREFIX=/opt/libvnc <br>
+..</p>
+<h3 id="弯路子">弯路子</h3>
+<p>然后再次进行了 guacd 编译。但是还是不行。这时想起了王院长之前说过的链接。于是去ldd 看了下 guacd
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-4.png"
+        data-srcset="images/ssl_handshake/image-4.png, images/ssl_handshake/image-4.png 1.5x, images/ssl_handshake/image-4.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-4.png"
+        title="alt text" />
+可以看到，引用了 libssl1.1 但是还有老版本的 10.而vnc 的链接居然没有。</p>
+<p>到了这一步，笔者走了一个弯路子，认为是不是只要我将guacd对libssl 10.so的全部依赖组件都升级成1.1.1w的就可以了。 甚至开始去做，比如从 guacd 的编译日志中看到了</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-5.png"
+        data-srcset="images/ssl_handshake/image-5.png, images/ssl_handshake/image-5.png 1.5x, images/ssl_handshake/image-5.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-5.png"
+        title="alt text" /></p>
+<p>于是开始去做 openldap 的升级。
+当然，这些操作是不必要的，所以这里忽略不记了。</p>
+<p>直到最后，在一个 StackOverflow  <a href="https://stackoverflow.com/questions/70693891/does-apache-guacamole-support-vnc-connection-with-gnutls" target="_blank" rel="noopener noreffer ">Does Apache Guacamole support VNC Connection with GNUTLS?</a>
+中有人提及了一个论坛
+或者说<a href="https://lists.apache.org/thread/81l0hcqjdn2yx7jggz1j83t0khp3cq1k" target="_blank" rel="noopener noreffer ">邮件</a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-6.png"
+        data-srcset="images/ssl_handshake/image-6.png, images/ssl_handshake/image-6.png 1.5x, images/ssl_handshake/image-6.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-6.png"
+        title="alt text" /></p>
+<p>Guacd 的 vnc 连接方式完全取决于 libvncclient 。 而libvncclient 组件是 libvncserver 的一部分。
+所以又回到了之前的问题上面了，libvncserver 为什么没有启用 新的 openssl。 或者说，为什么 guacd 没有使用新的 libvncserver。</p>
+<p>这里回到 guacd 没有 vnc 依赖的问题。在同事帮助下，得知 guacd 的这几个协议是动态加载的，所以主程序没有依赖是正常的，它们在
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-7.png"
+        data-srcset="images/ssl_handshake/image-7.png, images/ssl_handshake/image-7.png 1.5x, images/ssl_handshake/image-7.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-7.png"
+        title="alt text" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="image.png"
+        data-srcset="image.png, image.png 1.5x, image.png 2x"
+        data-sizes="auto"
+        alt="image.png"
+        title="alt text" /></p>
+<p>可以看到，它引用的 vnc 不是我们重新编译的，而是旧的。那么这里破案了。</p>
+<p><code>Guacd -&gt; 老libvnc -&gt; openssl 1.0.2k</code></p>
+<p>所以我们将 guacd 重新指向新的libvnc就好了，这里学习 openssl 的方法，将libvnc 也安装到了一个独立文件夹</p>
+<h3 id="libvncserver-rpm">Libvncserver rpm</h3>
+<p>考虑到前文已经给出了一个rpm的全过程，所以这里只写spec</p>
+<pre tabindex="0"><code>Name:           libvncserver
+Version:        0.9.15
+Release:        1%{?dist}
+Summary:        A library for creating VNC servers and clients
+
+License:        GPLv2+
+URL:            https://github.com/LibVNC/libvncserver
+Source0:        libvncserver-LibVNCServer-%{version}.tar.gz
+
+BuildRequires:  gcc, make, cmake
+Requires:       glibc
+
+%description
+LibVNCServer is a library that makes it easy to implement VNC server or client functionality.
+
+%prep
+%setup -q -n libvncserver-LibVNCServer-%{version}
+
+%build
+# 使用 CMake 构建，添加你的编译选项
+mkdir -p build
+cd build
+cmake -DCMAKE_C_FLAGS=&#34;-I/usr/local/openssl1.1.1w/include&#34; \
+      -DCMAKE_CXX_FLAGS=&#34;-I/usr/local/openssl1.1.1w/include&#34; \
+      -DCMAKE_EXE_LINKER_FLAGS=&#34;-L/usr/local/openssl1.1.1w/lib&#34; \
+      -DCMAKE_SHARED_LINKER_FLAGS=&#34;-L/usr/local/openssl1.1.1w/lib&#34; \
+      -DOPENSSL_ROOT_DIR=/usr/local/openssl1.1.1w \
+      -DOPENSSL_LIBRARIES=/usr/local/openssl1.1.1w/lib \
+      -DOPENSSL_INCLUDE_DIR=/usr/local/openssl1.1.1w/include \
+      -DCMAKE_INSTALL_PREFIX=/opt/libvnc \
+      ..
+make %{?_smp_mflags}
+
+%install
+# 安装到指定目录
+rm -rf $RPM_BUILD_ROOT
+cd build
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%files
+/opt/libvnc/include
+/opt/libvnc/lib64
+
+%changelog
+* Tue Feb 18 2025 zzy &lt;zhangzy@longersec.com&gt; - 0.9.15-1
+- Initial RPM release
+</code></pre><p>可以看到，我将libvnc 安装到了 /opt/libvnc 文件夹下</p>
+<p>之后就是重新编译 guacd</p>
+<h4 id="新-guacd">新 guacd</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./configure --prefix<span class="o">=</span>/custom/server <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --with-init-dir<span class="o">=</span>/custom/server <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --disable-kubernetes <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --enable-shared <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            <span class="nv">CPPFLAGS</span><span class="o">=</span><span class="s2">&#34;-I/usr/local/openssl1.1.1w/include -I/opt/libvnc/include&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&#34;-L/usr/local/openssl1.1.1w/lib -L/opt/libvnc/lib64/ -Wl,-rpath=/opt/libvnc/lib64&#34;</span>
+</span></span></code></pre></div><p>补充了 libvnc,可以看到 指向了</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-9.png"
+        data-srcset="images/ssl_handshake/image-9.png, images/ssl_handshake/image-9.png 1.5x, images/ssl_handshake/image-9.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-9.png"
+        title="alt text" /></p>
+<p>这个版本的guacd 也确实可以连接了</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-10.png"
+        data-srcset="images/ssl_handshake/image-10.png, images/ssl_handshake/image-10.png 1.5x, images/ssl_handshake/image-10.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-10.png"
+        title="alt text" /></p>
+<p>这里如果有眼尖的读者，或许可以看到日志中有一个告警。这是一个坑，后续会谈到</p>
+<h2 id="新的问题">新的问题</h2>
+<p>看上去一切ok了，但是在实际测试中发现了新的问题。只是可以连上去了，一操作就要崩溃
+同时有一个偶现日志：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-11.png"
+        data-srcset="images/ssl_handshake/image-11.png, images/ssl_handshake/image-11.png 1.5x, images/ssl_handshake/image-11.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-11.png"
+        title="alt text" /></p>
+<h3 id="去除对-gcrypt-的依赖">去除对 gcrypt 的依赖</h3>
+<p>这时候还是有些迷茫的，先一步步来吧。 上面我也提到了有个告警的坑</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-12.png"
+        data-srcset="images/ssl_handshake/image-12.png, images/ssl_handshake/image-12.png 1.5x, images/ssl_handshake/image-12.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-12.png"
+        title="alt text" /></p>
+<p>Libgcrypt 告警。但是这是 gnutls 的加解密库，openssl 并不依赖它。
+笔者就在想，是不是 guacd 有类似 https 连接的一种省略方法，前期握手的时候使用非对称加密，彻底连接后使用对称加密来减少性能开销，而这一步正好用了 libgcrypt</p>
+<p>于是继续走弯路，想要升这里，不过幸好看到了 libvncserver 的<a href="https://github.com/LibVNC/libvncserver/issues/590#issuecomment-1634347412" target="_blank" rel="noopener noreffer ">官方issue</a></p>
+<p>这里提到了 关闭 ssl，开启gcrypt 的方法，那笔者反过来，关闭 gnutls 与 gcrypt 开启tls就好了</p>
+<p>所以改成了这样。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cmake -DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&#34;-I/usr/local/openssl1.1.1w/include&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DCMAKE_CXX_FLAGS<span class="o">=</span><span class="s2">&#34;-I/usr/local/openssl1.1.1w/include&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DCMAKE_EXE_LINKER_FLAGS<span class="o">=</span><span class="s2">&#34;-L/usr/local/openssl1.1.1w/lib&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DCMAKE_SHARED_LINKER_FLAGS<span class="o">=</span><span class="s2">&#34;-L/usr/local/openssl1.1.1w/lib&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DOPENSSL_ROOT_DIR<span class="o">=</span>/usr/local/openssl1.1.1w <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DOPENSSL_LIBRARIES<span class="o">=</span>/usr/local/openssl1.1.1w/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DOPENSSL_INCLUDE_DIR<span class="o">=</span>/usr/local/openssl1.1.1w/include <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DCMAKE_INSTALL_PREFIX<span class="o">=</span>/opt/libvnc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DWITH_GNUTLS<span class="o">=</span>OFF <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DWITH_OPENSSL<span class="o">=</span>ON <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DWITH_FFMPEG<span class="o">=</span>OFF <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      -DWITH_GCRYPT<span class="o">=</span>OFF <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      ..
+</span></span></code></pre></div><p>到这一步 gcrypt 的依赖就去除了，直接将rpm 换上去看看。</p>
+<h3 id="回退-libvncserver-版本">回退 libvncserver 版本</h3>
+<p>但是问题仍然存在，这时候就想照猫画虎，用一下 gdb 调试，不过看到了一个issue，他也遇到了类似的崩溃问题，但是说 使用 -f 启用就一切ok，所以我也是试了试</p>
+<p><code>/custom/server/sbin/guacd -p /var/run/guacd.pid -f </code></p>
+<p>然后开始运维，还是会出错，但是看到了更详细的日志
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="images/ssl_handshake/image-13.png"
+        data-srcset="images/ssl_handshake/image-13.png, images/ssl_handshake/image-13.png 1.5x, images/ssl_handshake/image-13.png 2x"
+        data-sizes="auto"
+        alt="images/ssl_handshake/image-13.png"
+        title="alt text" /></p>
+<p>这一步笔者其实没有办法了，只是在收集的时候，发现其他环境的libvnserver 都是 0.9.14，只有这里，因为是我手动编译的，所以是更新的 0.9.15 所以我干脆重新替换了一下，使用0.9.14</p>
+<p>然后好了。。。。</p>
+<p>具体的问题到底是什么也不知道了，笔者只给 libvncserver 官方提了个issue，等待他们修复了</p>
+</div><div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/zzy2210" target="_blank">y1nhui</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp">皖ICP备19008609号-1</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOIVCTEM4CdyQM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"zzy2210/zzy2210.github.io","repoId":"R_kgDOIVCTEA"}},"lightgallery":true};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

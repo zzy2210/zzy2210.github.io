@@ -26,7 +26,7 @@
     <pubDate>Wed, 14 Jun 2023 17:35:08 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/k8s_build/</guid>
-    <description><![CDATA[完成k8s的单节点环境搭建]]></description>
+    <description><![CDATA[kubernetes 环境搭建 前言 尝试开学学习云原生与k8s，一开始尝试先看看官方文档中对各个名次的解析，但是感觉个人对架构等并不是很清晰，于是干脆直接上手搭建]]></description>
 </item>
 </channel>
 </rss>

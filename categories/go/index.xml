@@ -10,7 +10,7 @@
     <pubDate>Fri, 17 Feb 2023 23:31:04 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/go_net/</guid>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[前言 最近项目开发和网卡等内容做了一些交道。遇到了一些常见的操作。比如 IP/CIDR 与 ip和netmask的相互转换，IP/CIDR 转换为IP段形式以及转]]></description>
 </item>
 <item>
     <title>数据结构-二叉树与其他树</title>
@@ -18,7 +18,7 @@
     <pubDate>Mon, 14 Nov 2022 20:46:54 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/tree/</guid>
-    <description><![CDATA[完成对二叉树的遍历讲解与实现]]></description>
+    <description><![CDATA[数据结构-二叉树与树 前言 本文主要内容为二叉树，树只是一概而过。 其实在去年的时候有写过一篇二叉树的博客，当时是以leetcode题目为主，不过]]></description>
 </item>
 <item>
     <title>数据结构-字典</title>
@@ -26,7 +26,7 @@
     <pubDate>Mon, 07 Nov 2022 22:55:36 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/dict/</guid>
-    <description><![CDATA[完成对跳表的说明，对散列的定义，实现与应用]]></description>
+    <description><![CDATA[数据结构 字典 前言 这一章的撰写有些纠结。因为我个人是根据 《数据结构、算法与应用 C++ 实现》这本书来进行学习与博客编写的。 这一章的章节名是跳表与散列]]></description>
 </item>
 <item>
     <title>数据结构-队列</title>
@@ -34,7 +34,7 @@
     <pubDate>Mon, 31 Oct 2022 21:58:57 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/queue/</guid>
-    <description><![CDATA[完成对队列的定义，实现与应用]]></description>
+    <description><![CDATA[数据结构 队列 定义 队列：遵循先进先出原则的线性表。其插入与删除操作分别在表的两端进行。进行插入操作的是队尾(back/rear)，删除操作的是]]></description>
 </item>
 <item>
     <title>数据结构-栈</title>
@@ -50,7 +50,7 @@
     <pubDate>Tue, 13 Apr 2021 16:17:10 &#43;0800</pubDate>
     <author>y1nhui</author>
     <guid>https://zzy2210.github.io/post/%E9%93%BE%E8%A1%A8/</guid>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[前言 ​ 因为想干纯后端，所以开始刷力扣巩固算法与数据结构，结果在写几天前的每日一题的时候发现自己对于链表的操作已经有些遗忘，以及对于链表的实现]]></description>
 </item>
 </channel>
 </rss>
