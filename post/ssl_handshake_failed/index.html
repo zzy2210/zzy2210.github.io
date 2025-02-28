@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://zzy2210.github.io/post/ssl_handshake_failed/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2025-02-27T21:25:49+08:00" />
-<meta property="article:modified_time" content="2025-02-28T03:07:16+00:00" /><meta property="og:site_name" content="黑白の世界" />
+<meta property="article:modified_time" content="2025-02-28T03:10:12+00:00" /><meta property="og:site_name" content="黑白の世界" />
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="vnc连接高版本tls的定位于解决方法"/>
 <meta name="twitter:description" content="基于guacd连接高版本tls机器上的vnc服务器失败后的试错与解决方案"/>
@@ -28,7 +28,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/zzy2210.github.io\/post\/ssl_handshake_failed\/"
         },"genre": "post","wordcount":  2271 ,
-        "url": "https:\/\/zzy2210.github.io\/post\/ssl_handshake_failed\/","datePublished": "2025-02-27T21:25:49+08:00","dateModified": "2025-02-28T03:07:16+00:00","publisher": {
+        "url": "https:\/\/zzy2210.github.io\/post\/ssl_handshake_failed\/","datePublished": "2025-02-27T21:25:49+08:00","dateModified": "2025-02-28T03:10:12+00:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -191,19 +191,19 @@ ln -sf %{openssldir}/bin/openssl %{buildroot}%{_bindir}
 <img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-2.png"
-        data-srcset="images/ssl_handshake/image-2.png, images/ssl_handshake/image-2.png 1.5x, images/ssl_handshake/image-2.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-2.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-2.png, https://pic.y1nhui.com/ssl_handshake/image-2.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-2.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-2.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-2.png"
         title="alt text" />
 并且执行 openssl ciphers -v  也可以看到已经支持了tls1.3
 <img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-3.png"
-        data-srcset="images/ssl_handshake/image-3.png, images/ssl_handshake/image-3.png 1.5x, images/ssl_handshake/image-3.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-3.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-3.png, https://pic.y1nhui.com/ssl_handshake/image-3.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-3.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-3.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-3.png"
         title="alt text" />
 但是这里运行，guacd 还是连接失败，从日志可以定位到仍然在使用 openssl 1.0.2 k，所以需要重新编译guacd</p>
 <h3 id="编译guacd">编译guacd</h3>
@@ -233,20 +233,20 @@ cmake -DCMAKE_C_FLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
 <img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-4.png"
-        data-srcset="images/ssl_handshake/image-4.png, images/ssl_handshake/image-4.png 1.5x, images/ssl_handshake/image-4.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-4.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-4.png, https://pic.y1nhui.com/ssl_handshake/image-4.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-4.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-4.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-4.png"
         title="alt text" />
 可以看到，引用了 libssl1.1 但是还有老版本的 10.而vnc 的链接居然没有。</p>
 <p>到了这一步，笔者走了一个弯路子，认为是不是只要我将guacd对libssl 10.so的全部依赖组件都升级成1.1.1w的就可以了。 甚至开始去做，比如从 guacd 的编译日志中看到了</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-5.png"
-        data-srcset="images/ssl_handshake/image-5.png, images/ssl_handshake/image-5.png 1.5x, images/ssl_handshake/image-5.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-5.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-5.png, https://pic.y1nhui.com/ssl_handshake/image-5.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-5.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-5.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-5.png"
         title="alt text" /></p>
 <p>于是开始去做 openldap 的升级。
 当然，这些操作是不必要的，所以这里忽略不记了。</p>
@@ -256,10 +256,10 @@ cmake -DCMAKE_C_FLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-6.png"
-        data-srcset="images/ssl_handshake/image-6.png, images/ssl_handshake/image-6.png 1.5x, images/ssl_handshake/image-6.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-6.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-6.png, https://pic.y1nhui.com/ssl_handshake/image-6.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-6.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-6.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-6.png"
         title="alt text" /></p>
 <p>Guacd 的 vnc 连接方式完全取决于 libvncclient 。 而libvncclient 组件是 libvncserver 的一部分。
 所以又回到了之前的问题上面了，libvncserver 为什么没有启用 新的 openssl。 或者说，为什么 guacd 没有使用新的 libvncserver。</p>
@@ -267,10 +267,10 @@ cmake -DCMAKE_C_FLAGS=&quot;-I/usr/local/openssl1.1.1w/include&quot; <br>
 <img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-7.png"
-        data-srcset="images/ssl_handshake/image-7.png, images/ssl_handshake/image-7.png 1.5x, images/ssl_handshake/image-7.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-7.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-7.png, https://pic.y1nhui.com/ssl_handshake/image-7.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-7.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-7.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-7.png"
         title="alt text" /></p>
 <p><img
         class="lazyload"
@@ -344,19 +344,19 @@ make install DESTDIR=$RPM_BUILD_ROOT
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-9.png"
-        data-srcset="images/ssl_handshake/image-9.png, images/ssl_handshake/image-9.png 1.5x, images/ssl_handshake/image-9.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-9.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-9.png, https://pic.y1nhui.com/ssl_handshake/image-9.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-9.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-9.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-9.png"
         title="alt text" /></p>
 <p>这个版本的guacd 也确实可以连接了</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-10.png"
-        data-srcset="images/ssl_handshake/image-10.png, images/ssl_handshake/image-10.png 1.5x, images/ssl_handshake/image-10.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-10.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-10.png, https://pic.y1nhui.com/ssl_handshake/image-10.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-10.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-10.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-10.png"
         title="alt text" /></p>
 <p>这里如果有眼尖的读者，或许可以看到日志中有一个告警。这是一个坑，后续会谈到</p>
 <h2 id="新的问题">新的问题</h2>
@@ -365,20 +365,20 @@ make install DESTDIR=$RPM_BUILD_ROOT
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-11.png"
-        data-srcset="images/ssl_handshake/image-11.png, images/ssl_handshake/image-11.png 1.5x, images/ssl_handshake/image-11.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-11.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-11.png, https://pic.y1nhui.com/ssl_handshake/image-11.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-11.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-11.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-11.png"
         title="alt text" /></p>
 <h3 id="去除对-gcrypt-的依赖">去除对 gcrypt 的依赖</h3>
 <p>这时候还是有些迷茫的，先一步步来吧。 上面我也提到了有个告警的坑</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-12.png"
-        data-srcset="images/ssl_handshake/image-12.png, images/ssl_handshake/image-12.png 1.5x, images/ssl_handshake/image-12.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-12.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-12.png, https://pic.y1nhui.com/ssl_handshake/image-12.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-12.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-12.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-12.png"
         title="alt text" /></p>
 <p>Libgcrypt 告警。但是这是 gnutls 的加解密库，openssl 并不依赖它。
 笔者就在想，是不是 guacd 有类似 https 连接的一种省略方法，前期握手的时候使用非对称加密，彻底连接后使用对称加密来减少性能开销，而这一步正好用了 libgcrypt</p>
@@ -406,10 +406,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 <img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="images/ssl_handshake/image-13.png"
-        data-srcset="images/ssl_handshake/image-13.png, images/ssl_handshake/image-13.png 1.5x, images/ssl_handshake/image-13.png 2x"
+        data-src="https://pic.y1nhui.com/ssl_handshake/image-13.png"
+        data-srcset="https://pic.y1nhui.com/ssl_handshake/image-13.png, https://pic.y1nhui.com/ssl_handshake/image-13.png 1.5x, https://pic.y1nhui.com/ssl_handshake/image-13.png 2x"
         data-sizes="auto"
-        alt="images/ssl_handshake/image-13.png"
+        alt="https://pic.y1nhui.com/ssl_handshake/image-13.png"
         title="alt text" /></p>
 <p>这一步笔者其实没有办法了，只是在收集的时候，发现其他环境的libvnserver 都是 0.9.14，只有这里，因为是我手动编译的，所以是更新的 0.9.15 所以我干脆重新替换了一下，使用0.9.14</p>
 <p>然后好了。。。。</p>
