@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Rag - Tag - 黑白の世界</title>
+        <link>https://zzy2210.github.io/tags/rag/</link>
+        <description>Rag - Tag - 黑白の世界</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>y1nhui@foxmail.com (y1nhui)</managingEditor>
+            <webMaster>y1nhui@foxmail.com (y1nhui)</webMaster><lastBuildDate>Mon, 01 Sep 2025 17:35:56 &#43;0800</lastBuildDate><atom:link href="https://zzy2210.github.io/tags/rag/" rel="self" type="application/rss+xml" /><item>
+    <title>llm与RAG的学习与优化</title>
+    <link>https://zzy2210.github.io/post/llm-rag-tutorial-summary/</link>
+    <pubDate>Mon, 01 Sep 2025 17:35:56 &#43;0800</pubDate>
+    <author>y1nhui</author>
+    <guid>https://zzy2210.github.io/post/llm-rag-tutorial-summary/</guid>
+    <description><![CDATA[前言 这是一篇拖延了半年的文章。 年初有计划做一下基于LLM大模型的应用，正好公司有业务需求，于是学习了一下RAG的相关知识，一边看字节开源的 eino]]></description>
+</item>
+</channel>
+</rss>

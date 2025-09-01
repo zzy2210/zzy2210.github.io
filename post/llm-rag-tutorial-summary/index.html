@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>llm与RAG的学习与优化 - 黑白の世界</title><meta name="Description" content="一位前安全现Go云开发的博客"><meta property="og:title" content="llm与RAG的学习与优化" />
+<meta property="og:description" content="前言 这是一篇拖延了半年的文章。 年初有计划做一下基于LLM大模型的应用，正好公司有业务需求，于是学习了一下RAG的相关知识，一边看字节开源的 eino" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zzy2210.github.io/post/llm-rag-tutorial-summary/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2025-09-01T17:35:56+08:00" />
+<meta property="article:modified_time" content="2025-09-01T11:11:10+00:00" /><meta property="og:site_name" content="黑白の世界" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="llm与RAG的学习与优化"/>
+<meta name="twitter:description" content="前言 这是一篇拖延了半年的文章。 年初有计划做一下基于LLM大模型的应用，正好公司有业务需求，于是学习了一下RAG的相关知识，一边看字节开源的 eino"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zzy2210.github.io/post/llm-rag-tutorial-summary/" /><link rel="prev" href="https://zzy2210.github.io/post/ssl_handshake_failed/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "llm与RAG的学习与优化",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zzy2210.github.io\/post\/llm-rag-tutorial-summary\/"
+        },"genre": "post","keywords": "llm, rag","wordcount":  5066 ,
+        "url": "https:\/\/zzy2210.github.io\/post\/llm-rag-tutorial-summary\/","datePublished": "2025-09-01T17:35:56+08:00","dateModified": "2025-09-01T11:11:10+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "y1nhui"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="黑白の世界">黑白の世界</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/post/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/friend/"> 友链 </a><a class="menu-item" href="/about/" title="About"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="黑白の世界">黑白の世界</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/post/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/friend/" title="">友链</a><a class="menu-item" href="/about/" title="About">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">llm与RAG的学习与优化</h1><div class="content" id="content"><h2 id="前言">前言</h2>
+<p>这是一篇拖延了半年的文章。</p>
+<p>年初有计划做一下基于LLM大模型的应用，正好公司有业务需求，于是学习了一下RAG的相关知识，一边看字节开源的 eino 框架学习开发，一边补充这 agent，mcp，rag相关的知识。</p>
+<p>当时就计划写一篇总结的文章，不过之后事情太多有些搁置。今天终于是打算拿出来，总结一番。</p>
+<p>笔者也是探索中学，如果读者有更好的建议，可以直接在评论区留言。</p>
+<h2 id="ai基础基础知识">AI基础基础知识</h2>
+<h3 id="大模型的区别-llm嵌入式与多模态">大模型的区别 LLM，嵌入式与多模态</h3>
+<p>如果是一位没有接触过AI开发，只局限于使用AI工具的朋友。
+可能会对提及的这些名词有些疑惑，可能经常看到一些新闻携带这些名词。</p>
+<ul>
+<li>LLM模型
+<ul>
+<li>也就是大语言模型。是一种利用机器学习技术来理解和生成人类语言的人工智能模型。大家常说的deepseek，gpt-4.1,claude sonnet 4 等，都算是LLM模型</li>
+</ul>
+</li>
+<li>嵌入式模型
+<ul>
+<li>用一种自问自答的方式，嵌入式模型就是在嵌入过程中使用的模型</li>
+<li>嵌入： 神经网络的一个概念，指将文本，图片等转化为可学习的向量</li>
+<li>所以这里可以简单地将嵌入式模型理解为将文本，图片转化为向量的AI模型</li>
+<li>不同的嵌入式模型有不同专精的领域，他们对所属领域的向量化表现要比其他模型好</li>
+</ul>
+</li>
+<li>多模态
+<ul>
+<li>模型的一种标签。可以简单的理解为可以理解图片，视频，文本等数据的大模型，而不是只能做文字对话</li>
+</ul>
+</li>
+</ul>
+<h3 id="调用方法-openai-标准调用">调用方法 OpenAI 标准调用</h3>
+<p>对于 AI应用开发。对于模型的调用方法多种多样，不同家有不同的标准</p>
+<ul>
+<li>OpenAI</li>
+<li>anthropic</li>
+<li>Gemini</li>
+<li>Ollama（本地调用）</li>
+</ul>
+<p>而我们最常用，也就是各种大模型平台最经常提供的接入方式就是OpenAI标准。</p>
+<p>下面是一个使用<code>curl</code>调用OpenAI <code>chat/completions</code>接口的示例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl https://api.openai.com/v1/chat/completions <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -H <span class="s2">&#34;Content-Type: application/json&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -H <span class="s2">&#34;Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -d <span class="s1">&#39;{
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#34;model&#34;: &#34;gpt-4&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#34;messages&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s1">      {
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &#34;role&#34;: &#34;system&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &#34;content&#34;: &#34;你是一个乐于助人的助手。&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1">      },
+</span></span></span><span class="line"><span class="cl"><span class="s1">      {
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &#34;role&#34;: &#34;user&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &#34;content&#34;: &#34;你好！&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1">      }
+</span></span></span><span class="line"><span class="cl"><span class="s1">    ],
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#34;stream&#34;: false,
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#34;temperature&#34;: 0.7
+</span></span></span><span class="line"><span class="cl"><span class="s1">  }&#39;</span>
+</span></span></code></pre></div><p>关键参数说明：</p>
+<ul>
+<li><code>model</code>: 指定使用的模型，例如 <code>gpt-4</code>, <code>gpt-3.5-turbo</code>。</li>
+<li><code>messages</code>: 一个消息列表，用于驱动对话。
+<ul>
+<li><code>role</code>: 角色，可以是 <code>system</code> (设定助手行为), <code>user</code> (用户提问), 或 <code>assistant</code> (模型之前的回复)。</li>
+<li><code>content</code>: 消息的具体内容。</li>
+</ul>
+</li>
+<li><code>stream</code>: 是否使用流式传输。如果为 <code>true</code>，服务器会分块发送数据，实现打字机效果。</li>
+<li><code>temperature</code>: 控制输出的随机性。值越高（如 0.8），输出越随机；值越低（如 0.2），输出越确定。</li>
+<li><code>Authorization</code>: 你的API密钥，通常从环境变量 <code>$OPENAI_API_KEY</code> 中获取。</li>
+</ul>
+<h2 id="rag向量数据库">RAG/向量数据库</h2>
+<h3 id="基础知识">基础知识</h3>
+<p>RAG 检索增强生成（Retrieval Augmented Generation）</p>
+<p>RAG的提出是因为大模型存在幻觉问题，大预言模型虽然看上去万能，但其实很多时候会一本正经的胡说八道，如果是编程开发中出现这种问题，问题不大，大不了跑一下发现编译不通过重新编码</p>
+<p>但是在医生，律师等行业如果出现这种现象，那么就会导致严重的问题。为了解决这个问题，业界提出了RAG方法 <a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener noreffer "> Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a>。</p>
+<p>最初的版本就是，在与AI交互的过程中，在prompt中，尤其是 role 中的 system中，写入相关知识内容，防止AI胡编乱造，</p>
+<h4 id="向量">向量</h4>
+<p>简单来说，向量就是一串数字，它像一个‘语义坐标’，代表了文本在多维空间中的位置。意思相近的文本，它们的‘坐标’在空间中也会靠得很近。</p>
+<p>但是当相关知识内容变得庞大后，单纯的在prompt中内置全部资料的方法就失效了。
+一是模型存在上下文token限制，过多的资料反而会导致它出现幻觉
+二是出于成本考虑，如果塞入过多的资料，但是实际只用到其中的一点，那就会导致token浪费，开销过高</p>
+<p>然后就有人提出，将不同的资料都存入向量数据库。在AI需要的时候，根据我们的描述内容的向量结果去匹配数据库中符合的向量。
+将符合的top k 都视为匹配的数据给到 llm模型 就好。这样节省了token开销，而且还能保证资料可靠</p>
+<h4 id="匹配流派语义与关键词">匹配流派：语义与关键词</h4>
+<p>在向量搜索领域，主流的匹配方式分为两大流派，它们分别解决了不同类型的问题：</p>
+<ul>
+<li>
+<p><strong>稠密向量 (Dense Vector) - 语义搜索</strong></p>
+<ul>
+<li><strong>描述</strong>：这是我们通常谈论的向量搜索。它通过神经网络嵌入模型（Embedding Model），将文本的深层语义压缩成一个几百到几千维的连续向量。</li>
+<li><strong>优势</strong>：能够捕捉文本的<strong>真实意图</strong>，实现“意思相似”而非“字面匹配”的搜索。例如，搜索“AI编程”可以找到包含“人工智能程序设计”的文档。</li>
+<li><strong>劣势</strong>：对于需要精确匹配的关键词、术语或代码片段，可能会因为“理解过头”而召回不那么精确的结果。</li>
+</ul>
+</li>
+<li>
+<p><strong>稀疏向量 (Sparse Vector) - 关键词搜索</strong></p>
+<ul>
+<li><strong>描述</strong>：这是传统搜索引擎（如Elasticsearch中的BM25算法）思想的现代化。它将文本表示为一个维度极高（如词汇表大小）但绝大部分为零的向量。只有文本中出现的词，在对应维度上才有值。</li>
+<li><strong>优势</strong>：能够实现<strong>关键词的精确匹配</strong>，对于专有名词、产品型号、代码变量等场景效果极佳。</li>
+<li><strong>劣势</strong>：无法理解同义词或近义词，存在语义鸿沟。搜索“AI编程”无法找到“人工智能程序设计”。</li>
+</ul>
+</li>
+<li>
+<p><strong>混合搜索 (Hybrid Search)</strong></p>
+<ul>
+<li>现代先进的RAG系统通常采用混合搜索策略，即同时执行稠密和稀疏向量搜索，然后将两者的结果智能地融合（通常通过重排序步骤），从而兼具语义理解和关键词精确匹配的优点，达到最佳的召回效果。</li>
+</ul>
+</li>
+</ul>
+<h4 id="向量索引">向量索引</h4>
+<p>本来想写一节谈论向量匹配的方法，比如余弦相似度，欧氏距离，点积之类的，不过本文更多是面向开发者，所以就不多谈了，还是聊一聊开发技术选型强关联的内容</p>
+<p>向量索引，也可是一种数据库索引。不过它有很多类型</p>
+<ul>
+<li>基于图的方法（如HNSW）
+<ul>
+<li>把向量组织成一个复杂的网络图，从一个点出发，快速跳到目标附近</li>
+<li>目前最流行、性能最好的索引之一。</li>
+</ul>
+</li>
+<li>基于类的方法（IVF）
+<ul>
+<li>先把所有向量分成几千个“堆”（聚类），搜索时先判断查询向量属于哪个“堆”，然后只在那个“堆”里进行精确搜索。</li>
+</ul>
+</li>
+<li>基于哈希的方法（LSH）
+<ul>
+<li>用一种特殊的方式给向量降维和编码，让相似的向量有很大概率得到相同的编码。</li>
+</ul>
+</li>
+</ul>
+<h4 id="常见的数据库">常见的数据库</h4>
+<ol>
+<li>
+<p><strong>Elasticsearch</strong></p>
+<ul>
+<li>一个开源的、分布式的、RESTful的分析引擎，可以处理文本、数值、地理、结构化和非结构化数据。</li>
+<li><strong>优点</strong>: 支持大数据场景，可以作为大数据（如日志）的存储和检索服务。非常适合需要混合搜索的场景。</li>
+<li><strong>缺点</strong>: 相对较重，配置和维护有一定复杂度。</li>
+</ul>
+</li>
+<li>
+<p><strong>Redis</strong></p>
+<ul>
+<li>从 2022 年（Redis 7）起，通过模块正式支持向量搜索。</li>
+<li><strong>优点</strong>: 可以轻松集成到已有的 Redis 架构中，无需过多调整。</li>
+<li><strong>缺点</strong>: 基于内存运行，不适合处理海量数据，且方案较新，社区验证时间相对较短。</li>
+</ul>
+</li>
+<li>
+<p><strong>PostgreSQL (通过 <code>pgvector</code> 插件)</strong></p>
+<ul>
+<li>通过 <code>pgvector</code> 插件可以为 PG 提供向量检索能力。</li>
+<li><strong>优点</strong>: 对于已在使用PG的团队，集成成本极低。</li>
+<li><strong>缺点</strong>: 在作者的场景下，引入会与已有的 MySQL 架构定位冲突，故未考虑。</li>
+</ul>
+</li>
+<li>
+<p><strong>Milvus</strong></p>
+<ul>
+<li>一个开源的、专门为向量搜索设计的数据库。</li>
+<li><strong>优点</strong>: 支持云原生，可动态拓展，官方宣称可以支持十亿级数据。</li>
+<li><strong>缺点</strong>: 需要依赖 etcd 等组件，架构略重。</li>
+</ul>
+</li>
+</ol>
+<h3 id="基础-rag-流程">基础 RAG 流程</h3>
+<p>基础的RAG流程很简单：</p>
+<ol>
+<li>用户提问</li>
+<li>将用户提问通过嵌入式模型转化为向量a</li>
+<li>通过向量a在向量数据库中做匹配，匹配出top k 个数据结果</li>
+<li>将结果放入 system 中，提问放入正常的user中，发送给llm大模型</li>
+<li>将结果返回</li>
+</ol>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant 用户
+    participant RAG程序
+    participant 嵌入式模型
+    participant 向量数据库
+    participant LLM模型
+
+    用户-&gt;&gt;RAG程序: 1. 提问
+    RAG程序-&gt;&gt;嵌入式模型: 2. 将问题文本向量化
+    嵌入式模型--&gt;&gt;RAG程序: 返回问题向量
+    RAG程序-&gt;&gt;向量数据库: 3. 使用问题向量进行搜索
+    向量数据库--&gt;&gt;RAG程序: 返回Top-K相似文档
+    RAG程序-&gt;&gt;LLM模型: 4. 构造Prompt(相似文档 + 原始问题)
+    LLM模型--&gt;&gt;RAG程序: 生成最终答案
+    RAG程序--&gt;&gt;用户: 5. 返回答案
+</code></pre><h4 id="向量搜索是匹配不是提问">向量搜索是匹配，不是提问</h4>
+<p>这是一个需要注意的点。刚开始接触RAG系统的人（就是本人），往往会因为一开始小数据量的成功匹配，将向量匹配当成问答系统了。
+明明向量是由数据向量出来的，却用问题的向量去匹配
+如：</p>
+<p>向量内容： 岗位名称：go开发工程师
+提问： 我这里有一个简历，它的内容是 1.预期岗位go &hellip;..</p>
+<p>这样或许也可以匹配到，但是基本匹配系数比较低，当数据量增大后，容易匹配出一些奇怪的数据</p>
+<h3 id="rag调优">RAG调优</h3>
+<p>基础的RAG流程虽然简单，但在实际应用中，召回的上下文质量直接决定了LLM生成答案的优劣。为了从“能用”到“好用”，我们需要一系列的调优手段来优化召回效果。RAG的调优可以分为三个核心阶段：<strong>预处理（Pre-processing）</strong>、<strong>检索（Retrieval）</strong> 和 <strong>后处理（Post-processing）</strong>。</p>
+<h4 id="1-预处理优化数据质量">1. 预处理：优化数据质量</h4>
+<h5 id="分块-chunking">分块 (Chunking)</h5>
+<p>将文档切分成合适的、独立的语义单元是RAG中最关键的第一步。分块的质量直接影响向量的质量和检索的精度。</p>
+<ul>
+<li>
+<p><strong>为什么需要分块？</strong></p>
+<ul>
+<li><strong>上下文完整性</strong>：太小的块可能丢失关键信息，太大的块可能引入过多噪声。</li>
+<li><strong>Token限制</strong>：最终送入LLM的上下文有长度限制。</li>
+<li><strong>检索精度</strong>：合适的块大小能让向量更好地代表其核心语义。</li>
+</ul>
+</li>
+<li>
+<p><strong>常见分块策略</strong>：</p>
+<ul>
+<li><strong>固定大小分块 (Fixed-size Chunking)</strong>：最简单的方法，按固定字符数（如1000个字符）和一定的重叠（Overlap，如200个字符）来切分。优点是简单快速，缺点是容易切断完整的语义单元（如一个句子或段落）。</li>
+<li><strong>递归字符分割 (Recursive Character Text Splitting)</strong>：一种更智能的策略，它会尝试按一组分隔符（如 <code>\n\n</code>, <code>\n</code>, <code> </code>）递归地分割文本，尽可能保持段落和句子的完整性。这是 <code>LangChain</code> 等框架中默认且推荐的方式。</li>
+<li><strong>语义分块 (Semantic Chunking)</strong>：笔者最喜欢用的方法， 最开始看到实在 <code>eino</code> 框架的社区扩展<code>eino-ext</code>中，这是一种看上去就最很好用的方法（除了token开销更大）。而通过源码查看，它的开头处理也是递归分割，只是将分割后的每个片段来做余弦相似度对比，获得最符合语义的片段。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-检索优化查询与召回">2. 检索：优化查询与召回</h4>
+<h5 id="元数据过滤-metadata-filtering">元数据过滤 (Metadata Filtering)</h5>
+<p>通常，我们存储的不仅仅是文本块的向量，还会附带<strong>元数据（Metadata）</strong>，比如文档来源，这段记录对应的实际意义。不但可以用于知识库，还可以用于各种场景类向量数据库的优化。</p>
+<ul>
+<li>
+<p><strong>Pre-filtering（预过滤）</strong>：在进行向量搜索<strong>之前</strong>，先根据元数据筛选出一个文档子集，然后仅在这个子集中执行向量搜索。</p>
+<ul>
+<li><strong>优点</strong>：搜索范围大大缩小，速度快。</li>
+<li><strong>缺点</strong>：可能会因为过滤掉了部分相关文档而影响召回质量。</li>
+<li><strong>例子</strong>：先筛选出所有“2024年”发布的关于“AI”的文档，再进行向量搜索。</li>
+</ul>
+</li>
+<li>
+<p><strong>Post-filtering（后过滤）</strong>：先执行向量搜索，得到Top-K个结果，<strong>然后</strong>再对这K个结果应用元数据过滤。</p>
+<ul>
+<li><strong>优点</strong>：保证了向量搜索的完整性，不会漏掉任何可能相关的结果。</li>
+<li><strong>缺点</strong>：对于需要返回大量结果的场景，性能可能较低。</li>
+<li><strong>例子</strong>：向量搜索“黑色的”，得到最相似的100张图片记录，然后从这100张中筛选出元数据中<code>type</code>为<code>帽子</code>的结果。</li>
+</ul>
+</li>
+</ul>
+<h5 id="查询转换-query-transformation">查询转换 (Query Transformation)</h5>
+<p>用户的原始问题可能与文档中的表述存在语义鸿沟。查询转换的目的就是通过改写或扩展用户的查询，来提升召回率。</p>
+<ul>
+<li><strong>假设性问题 (Hypothetical Questions)</strong>：这是一种在<strong>数据入库时</strong>使用的技巧。针对每一个文档块，让LLM生成几个“这个文档块可以回答什么问题？”。然后将这些问题向量化，与原始文档块关联。在查询时，用户的<strong>问题</strong>会去匹配这些<strong>假设性问题</strong>，实现了“问题-问题”的匹配，通常比“问题-文档”的匹配效果更好。</li>
+<li><strong>多查询检索 (Multi-Query Retrieval)</strong>：在<strong>查询时</strong>，让LLM根据用户的原始问题，生成多个不同角度的相似问题，然后用这些问题并行地去检索，最后合并结果。这能有效扩大召回的广度。</li>
+</ul>
+<p>还有一种最简单的优化方法。用户提问都过一遍LLM大模型，让他标准化一些。</p>
+<h4 id="3-后处理优化最终上下文">3. 后处理：优化最终上下文</h4>
+<h5 id="重排序-reranking">重排序 (Reranking)</h5>
+<p>向量搜索（召回/Retrieval）追求的是“快”和“广”，可能会包含一些不那么相关的结果。重排序则是在召回之后、生成之前，引入一个更“精”的模型，对初步召回的Top-K个结果进行二次排序。</p>
+<ul>
+<li><strong>工作原理</strong>：重排序模型（如 Cohere Rerank 或一些跨编码器模型）会同时评估用户的<strong>原始问题</strong>和<strong>每个召回的文档块</strong>，给出一个更精确的相关性分数。</li>
+<li><strong>优势</strong>：能够将最相关、最重要的信息排在最前面，极大地提升了送入LLM的上下文质量，从而改善最终答案的准确性和相关性。这是提升RAG效果最有效的手段之一。</li>
+</ul>
+<h2 id="结语">结语</h2>
+<p>以上内容大概就是笔者最近在大模型学习，RAG开发与特定领域向量数据库构建业务中的一些总结与优化心得。
+同时不禁感叹，大模型从22年到如今的发展迅速。在去年的时候，更多还只是用于提示词和问答，而现在以及可以真的用于实际开发之中了。
+从GitHub copilot 到 cursor 到claude code。各种工具越来越可靠，越来越现代化。
+但是也有些养懒了大脑
+同时在写文档中也有了很多帮助。 可以看到本文在谈到RAG调优的格式突然有些变化。因为到这里笔者有些懒了，手写了思路与大纲后，直接让AI优化，然后再手改一番。</p>
+<p>本文还只是单纯的 RAG知识库，或者说向量数据库的相关技术点。下一篇就谈一谈 ai agent 与 mcp 吧</p>
+</div><div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/zzy2210" target="_blank">y1nhui</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp">皖ICP备19008609号-1</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOIVCTEM4CdyQM","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"zzy2210/zzy2210.github.io","repoId":"R_kgDOIVCTEA"}},"lightgallery":true};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
